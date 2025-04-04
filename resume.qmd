@@ -1,0 +1,6 @@
+---
+title: "Resume"
+---
+{{< pdf ./pdf/Resume.pdf width=100% height=800 >}}
+
+

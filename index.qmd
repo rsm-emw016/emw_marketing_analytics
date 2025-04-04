@@ -1,0 +1,15 @@
+---
+title: "Emma Wu"
+image: "emw_image.jpg"
+about: 
+  template: jolla
+  links:
+    - icon: envelope
+      href: mailto:emw016@ucsd.edu
+    - icon: LinkedIn
+      href: https://www.linkedin.com/in/emma-wu0719/
+---
+
+This is a Quarto website.
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
