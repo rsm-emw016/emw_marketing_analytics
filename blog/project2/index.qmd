@@ -1,4 +1,10 @@
-# Homework 1
+---
+title: "A Replication of Karlan and List (2007)"
+author: "Emma Wu"
+date: April 22, 2025
+callout-appearance: minimal # this hides the blue "i" icon on .callout-notes
+---
+
 
 ## Introduction
 
@@ -123,6 +129,46 @@ Both approaches gave consistent results: no variable showed a statistically sign
 
 This reassures us that any observed differences in outcomes later on are unlikely to be driven by pre-existing differences, reinforcing the credibility of our causal claims.
 
+
+## Experimental Results
+
+### Charitable Contribution Made
+
+First, I analyze whether matched donations lead to an increased response rate of making a donation. 
+
+```{pythpn}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load your dataset
+df = pd.read_stata("karlan_list_2007.dta")  # <-- update path if needed
+
+# Calculate donation rates
+donation_rates = df.groupby("treatment")["gave"].mean()
+
+# Set labels and values
+labels = ["Control", "Treatment"]
+values = [donation_rates[0], donation_rates[1]]
+
+# Plot
+plt.figure(figsize=(6, 5))
+bars = plt.bar(labels, values, color=["lightgreen", "skyblue"], edgecolor="black")
+plt.ylabel("Proportion Who Donated")
+plt.title("Donation Rates by Group")
+
+# Annotate bar values
+for bar in bars:
+    yval = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width()/2, yval + 0.002, f"{yval:.3f}", ha='center', va='bottom')
+
+# Show the plot
+plt.tight_layout()
+plt.show()
+```
+
+_todo: run a t-test between the treatment and control groups on the binary outcome of whether any charitable donation was made. Also run a bivariate linear regression that demonstrates the same finding. (It may help to confirm your calculations match Table 2a Panel A.) Report your statistical results and interpret them in the context of the experiment (e.g., if you found a difference with a small p-value or that was statistically significant at some threshold, what have you learned about human behavior? Use mostly English words, not numbers or stats, to explain your finding.)_
+
+_todo: run a probit regression where the outcome variable is whether any charitable donation was made and the explanatory variable is assignment to treatment or control. Confirm that your results replicate Table 3 column 1 in the paper._
 
 ### Differences between Match Rates
 
