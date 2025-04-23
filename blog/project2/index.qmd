@@ -85,6 +85,8 @@ I tested four pre-treatment variables—`mrm2` (months since last donation), `ye
 - Simple linear regressions
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Code"
 import pandas as pd
 import numpy as np
 import statsmodels.api as sm
@@ -136,35 +138,36 @@ This reassures us that any observed differences in outcomes later on are unlikel
 
 First, I analyze whether matched donations lead to an increased response rate of making a donation. 
 
-```{pythpn}
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Load your dataset
-df = pd.read_stata("karlan_list_2007.dta")  # <-- update path if needed
+df = pd.read_stata("karlan_list_2007.dta")
+rates = df.groupby("treatment")["gave"].mean()
 
-# Calculate donation rates
-donation_rates = df.groupby("treatment")["gave"].mean()
-
-# Set labels and values
 labels = ["Control", "Treatment"]
-values = [donation_rates[0], donation_rates[1]]
+values = [rates[0], rates[1]]
 
-# Plot
 plt.figure(figsize=(6, 5))
 bars = plt.bar(labels, values, color=["lightgreen", "skyblue"], edgecolor="black")
+plt.ylim(0, max(values) + 0.005)  
 plt.ylabel("Proportion Who Donated")
 plt.title("Donation Rates by Group")
 
-# Annotate bar values
 for bar in bars:
-    yval = bar.get_height()
-    plt.text(bar.get_x() + bar.get_width()/2, yval + 0.002, f"{yval:.3f}", ha='center', va='bottom')
+    height = bar.get_height()
+    plt.text(bar.get_x() + bar.get_width() / 2,
+             height - 0.001,  
+             f"{height:.3f}",
+             ha='center', va='top')
 
-# Show the plot
 plt.tight_layout()
 plt.show()
 ```
+
+The barplot compares the proportion of people who donated between the treatment and control groups. While donation rates are low in both groups, the treatment group shows a slightly higher rate (2.2%) compared to the control (1.8%), a difference consistent with the experimental design.
 
 _todo: run a t-test between the treatment and control groups on the binary outcome of whether any charitable donation was made. Also run a bivariate linear regression that demonstrates the same finding. (It may help to confirm your calculations match Table 2a Panel A.) Report your statistical results and interpret them in the context of the experiment (e.g., if you found a difference with a small p-value or that was statistically significant at some threshold, what have you learned about human behavior? Use mostly English words, not numbers or stats, to explain your finding.)_
 
@@ -179,6 +182,8 @@ To evaluate how the size of the match ratio influences donation behavior, I comp
 I first conducted pairwise t-tests comparing the proportion of individuals who donated (`gave`) under different match ratios:
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Code"
 from scipy.stats import ttest_ind
 import pandas as pd
 
@@ -220,7 +225,8 @@ All p-values are greater than 0.05, indicating **no statistically significant di
 Next, I ran a logistic regression to model the probability of donating as a function of match ratio:
 
 ```{python}
-
+#| code-fold: true
+#| code-summary: "Code"
 import statsmodels.formula.api as smf
 import pandas as pd
 
@@ -300,6 +306,8 @@ The treatment group gave slightly less, but the difference is not statistically 
 There is no  causal interpretation. Since we’re conditioning on a post-treatment behavior (having donated), this breaks randomization and introduces selection bias. Therefore, this result is descriptive only, not causal.
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Code"
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -360,6 +368,8 @@ I drew:
 Then, I matched each of the 10,000 treatment draws with a randomly selected control draw and computed their difference. This resulted in a vector of 10,000 differences. The plot below shows the cumulative average of these differences across simulations:
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Code"
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -388,6 +398,8 @@ This plot clearly demonstrates the Law of Large Numbers in action, showing that 
 ### Central Limit Theorem
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Code"
 import numpy as np
 import matplotlib.pyplot as plt
 
