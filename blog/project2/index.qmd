@@ -1,0 +1,380 @@
+# Homework 1
+
+## Introduction
+
+Karlan and List conducted a large-scale natural field experiment with over 50,000 previous donors to a liberal nonprofit in the U.S. Each donor was randomly assigned to receive one of several fundraising letters. The control group received a standard letter, while treatment groups received letters offering a matching grant, where a “concerned member” would match donations at 1:1, 2:1, or 3:1. These letters also varied in the maximum match amount ($25,000, $50,000, $100,000, or not stated) and the suggested donation amount, which was based on each donor’s past contributions.
+
+This setup allowed the researchers to test whether lowering the “price” of giving through matching offers increased donations. They also studied how the effects varied by political affiliation (red vs. blue states), donor history, and demographic characteristics. The findings have practical value for fundraisers and offer new insights into altruism and public goods theory. 
+
+## Data
+
+### Description
+
+### Variable Definitions
+
+| Variable             | Description                                                         |
+|----------------------|---------------------------------------------------------------------|
+| `treatment`          | Treatment                                                           |
+| `control`            | Control                                                             |
+| `ratio`              | Match ratio                                                         |
+| `ratio2`             | 2:1 match ratio                                                     |
+| `ratio3`             | 3:1 match ratio                                                     |
+| `size`               | Match threshold                                                     |
+| `size25`             | \$25,000 match threshold                                            |
+| `size50`             | \$50,000 match threshold                                            |
+| `size100`            | \$100,000 match threshold                                           |
+| `sizeno`             | Unstated match threshold                                            |
+| `ask`                | Suggested donation amount                                           |
+| `askd1`              | Suggested donation was highest previous contribution                |
+| `askd2`              | Suggested donation was 1.25 x highest previous contribution         |
+| `askd3`              | Suggested donation was 1.50 x highest previous contribution         |
+| `ask1`               | Highest previous contribution (for suggestion)                      |
+| `ask2`               | 1.25 x highest previous contribution (for suggestion)               |
+| `ask3`               | 1.50 x highest previous contribution (for suggestion)               |
+| `amount`             | Dollars given                                                       |
+| `gave`               | Gave anything                                                       |
+| `amountchange`       | Change in amount given                                              |
+| `hpa`                | Highest previous contribution                                       |
+| `ltmedmra`           | Small prior donor: last gift was less than median \$35              |
+| `freq`               | Number of prior donations                                           |
+| `years`              | Number of years since initial donation                              |
+| `year5`              | At least 5 years since initial donation                             |
+| `mrm2`               | Number of months since last donation                                |
+| `dormant`            | Already donated in 2005                                             |
+| `female`             | Female                                                              |
+| `couple`             | Couple                                                              |
+| `state50one`         | State tag: 1 for one observation of each of 50 states; 0 otherwise  |
+| `nonlit`             | Nonlitigation                                                       |
+| `cases`              | Court cases from state in 2004-5 in which organization was involved |
+| `statecnt`           | Percent of sample from state                                        |
+| `stateresponse`      | Proportion of sample from the state who gave                        |
+| `stateresponset`     | Proportion of treated sample from the state who gave                |
+| `stateresponsec`     | Proportion of control sample from the state who gave                |
+| `stateresponsetminc` | stateresponset - stateresponsec                                     |
+| `perbush`            | State vote share for Bush                                           |
+| `close25`            | State vote share for Bush between 47.5% and 52.5%                   |
+| `red0`               | Red state                                                           |
+| `blue0`              | Blue state                                                          |
+| `redcty`             | Red county                                                          |
+| `bluecty`            | Blue county                                                         |
+| `pwhite`             | Proportion white within zip code                                    |
+| `pblack`             | Proportion black within zip code                                    |
+| `page18_39`          | Proportion age 18-39 within zip code                                |
+| `ave_hh_sz`          | Average household size within zip code                              |
+| `median_hhincome`    | Median household income within zip code                             |
+| `powner`             | Proportion house owner within zip code                              |
+| `psch_atlstba`       | Proportion who finished college within zip code                     |
+| `pop_propurban`      | Proportion of population urban within zip code                      |
+
+::::
+
+### Balance Test 
+
+As an ad hoc test of the randomization mechanism, I provide a series of tests that compare aspects of the treatment and control groups to assess whether they are statistically significantly different from one another.
+
+I tested four pre-treatment variables—`mrm2` (months since last donation), `years` (years since initial donation), `freq` (number of prior donations), and `female` (binary gender indicator)—using two methods:
+
+- Two-sample t-tests
+
+- Simple linear regressions
+
+```{python}
+import pandas as pd
+import numpy as np
+import statsmodels.api as sm
+from scipy import stats
+df = pd.read_stata('/Users/bibibingya/Downloads/emw_marketing_analytics/blog/project2/karlan_list_2007.dta')
+variables_to_test = ['mrm2', 'years', 'freq', 'female']
+
+results = []
+
+for var in variables_to_test:
+    treat = df[df['treatment'] == 1][var].dropna()
+    control = df[df['treatment'] == 0][var].dropna()
+
+    diff = treat.mean() - control.mean()
+    se = np.sqrt(treat.var(ddof=1)/len(treat) + control.var(ddof=1)/len(control))
+    t_manual = diff / se
+    df_t = len(treat) + len(control) - 2
+    p_manual = 2 * (1 - stats.t.cdf(abs(t_manual), df_t))
+
+    reg_df = df[[var, 'treatment']].dropna()
+    X = sm.add_constant(reg_df['treatment'])
+    y = reg_df[var]
+    model = sm.OLS(y, X).fit()
+    
+    results.append({
+        "Variable": var,
+        "Mean Difference": round(diff, 4),
+        "T-stat (manual)": round(t_manual, 4),
+        "P-value (manual)": round(p_manual, 4),
+        "Coef (regression)": round(model.params['treatment'], 4),
+        "T-stat (regression)": round(model.tvalues['treatment'], 4),
+        "P-value (regression)": round(model.pvalues['treatment'], 4)
+    })
+
+results_df = pd.DataFrame(results)
+
+print("Baseline Balance Table (Treatment vs Control):")
+display(results_df)
+```
+
+Both approaches gave consistent results: no variable showed a statistically significant difference between groups at the 95% confidence level. These findings are consistent with Table 1 of the paper, where the means and standard deviations are visually similar across treatment and control conditions.
+
+This reassures us that any observed differences in outcomes later on are unlikely to be driven by pre-existing differences, reinforcing the credibility of our causal claims.
+
+
+### Differences between Match Rates
+
+To evaluate how the size of the match ratio influences donation behavior, I compared response rates across match conditions using both **t-tests** and **logistic regression**.
+
+#### T-Test Results
+
+I first conducted pairwise t-tests comparing the proportion of individuals who donated (`gave`) under different match ratios:
+
+```{python}
+from scipy.stats import ttest_ind
+import pandas as pd
+
+df = pd.read_stata('/Users/bibibingya/Downloads/emw_marketing_analytics/blog/project2/karlan_list_2007.dta')
+treated_df = df[df['treatment'] == 1]
+
+comparisons = [
+    ('ratio', 'ratio2', '1:1 vs 2:1'),
+    ('ratio', 'ratio3', '1:1 vs 3:1'),
+    ('ratio2', 'ratio3', '2:1 vs 3:1')
+]
+
+t_test_results = []
+
+for base_col, compare_col, label in comparisons:
+    group_base = treated_df[treated_df[base_col] == 1]['gave'].dropna()
+    group_compare = treated_df[treated_df[compare_col] == 1]['gave'].dropna()
+
+    t_stat, p_val = ttest_ind(group_base, group_compare, equal_var=False)
+
+    t_test_results.append({
+        'Comparison': label,
+        'Mean (Group A)': round(group_base.mean(), 4),
+        'Mean (Group B)': round(group_compare.mean(), 4),
+        'T-statistic': round(t_stat, 4),
+        'P-value': round(p_val, 4)
+    })
+
+results_df = pd.DataFrame(t_test_results)
+results_df
+```
+
+All p-values are greater than 0.05, indicating **no statistically significant difference** in response rates across the 1:1, 2:1, and 3:1 match ratios. These findings support the authors’ claim on page 8 that *“larger match ratios had no additional impact.”*
+
+---
+
+#### Logistic Regression
+
+Next, I ran a logistic regression to model the probability of donating as a function of match ratio:
+
+```{python}
+
+import statsmodels.formula.api as smf
+import pandas as pd
+
+df = pd.read_stata('/Users/bibibingya/Downloads/emw_marketing_analytics/blog/project2/karlan_list_2007.dta')
+
+model = smf.logit("gave ~ C(ratio)", data=df).fit()
+print(model.summary())
+```
+
+- Both the **2:1** and **3:1** match ratios significantly increase the odds of donation compared to the baseline.
+- However, the difference between 2:1 and 3:1 is very small.
+
+---
+
+#### Interpretation of Coefficients
+
+From the regression:
+
+$$
+\text{2:1 vs 1:1} \quad 0.242 - 0.153 = 0.089
+$$
+
+$$
+\text{3:1 vs 2:1} \quad 0.246 - 0.242 = 0.004
+$$
+
+Converted to odds ratios:
+
+$$
+\text{OR}_{2:1 \, \text{vs} \, 1:1} = \exp(0.089) \approx 1.093
+$$
+
+$$
+\text{OR}_{3:1 \, \text{vs} \, 2:1} = \exp(0.004) \approx 1.004
+$$
+
+---
+
+#### Conclusion
+
+While match ratios of **2:1** and **3:1** do increase the likelihood of donating compared to **1:1**, the **incremental gain from 2:1 to 3:1 is negligible**. The t-tests show no significant differences in actual donation rates, and the regression shows nearly identical odds of giving.
+
+Together, both statistical tests and model-based estimates support the conclusion in the original paper:
+> **Increasing the match ratio beyond 2:1 does not meaningfully improve donor response.**
+
+
+### Size of Charitable Contribution
+
+#### Unconditional Analysis (All Participants)
+
+I first analyzed whether individuals in the treatment group donated more on average than those in the control group, regardless of whether they donated.
+
+| Metric                            | Value            |
+|----------------------------------|------------------|
+| Mean (Control Group)             | \$0.813          |
+| Mean (Treatment Group)           | \$0.967          |
+| Mean Difference (Treatment - Control) | **+\$0.154**     |
+| P-value (T-Test)                 | 0.055            |
+| Treatment Coefficient (Regression) | 0.1536 (p = 0.063) |
+
+Although the treatment group gave slightly more, the difference is only marginally insignificant at the 5% level. This suggests the treatment may have increased average giving slightly, but the evidence is not conclusive.
+Since treatment was randomly assigned, this result can be interpreted as the causal effect of the treatment on the average donation amount.
+
+#### Conditional Analysis (Donors Only)
+
+Next, I restricted the sample to only those who donated and repeated the analysis to evaluate the treatment’s effect on donation size among givers.
+
+| Metric                            | Value            |
+|----------------------------------|------------------|
+| Mean (Control Group)             | \$45.54          |
+| Mean (Treatment Group)           | \$43.87          |
+| Mean Difference (Treatment - Control) | **-\$1.67**     |
+| P-value (T-Test)                 | 0.599            |
+| Treatment Coefficient (Regression) | −1.668 (p = 0.561) |
+
+The treatment group gave slightly less, but the difference is not statistically significant.
+There is no  causal interpretation. Since we’re conditioning on a post-treatment behavior (having donated), this breaks randomization and introduces selection bias. Therefore, this result is descriptive only, not causal.
+
+```{python}
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+df = pd.read_stata('/Users/bibibingya/Downloads/emw_marketing_analytics/blog/project2/karlan_list_2007.dta')
+
+donated_df = df[df['gave'] == 1]
+
+treat = donated_df[donated_df['treatment'] == 1]['amount'].dropna()
+control = donated_df[donated_df['treatment'] == 0]['amount'].dropna()
+
+mean_treat = treat.mean()
+mean_control = control.mean()
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
+
+# Treatment plot
+axes[0].hist(treat, bins=30, color='skyblue', edgecolor='black')
+axes[0].axvline(mean_treat, color='red', linestyle='--', linewidth=2, label=f'Mean = ${mean_treat:.2f}')
+axes[0].set_title('Treatment Group (Donors Only)')
+axes[0].set_xlabel('Donation Amount ($)')
+axes[0].set_ylabel('Frequency')
+axes[0].legend()
+
+# Control plot
+axes[1].hist(control, bins=30, color='lightgreen', edgecolor='black')
+axes[1].axvline(mean_control, color='red', linestyle='--', linewidth=2, label=f'Mean = ${mean_control:.2f}')
+axes[1].set_title('Control Group (Donors Only)')
+axes[1].set_xlabel('Donation Amount ($)')
+axes[1].legend()
+
+plt.tight_layout()
+plt.show()
+```
+
+
+## Simulation Experiment
+
+As a reminder of how the t-statistic "works," in this section I use simulation to demonstrate the Law of Large Numbers and the Central Limit Theorem.
+
+Suppose the true distribution of respondents who do not get a charitable donation match is Bernoulli with probability p=0.018 that a donation is made. 
+
+Further suppose that the true distribution of respondents who do get a charitable donation match of any size  is Bernoulli with probability p=0.022 that a donation is made.
+
+### Law of Large Numbers
+To illustrate the Law of Large Numbers (LLN), I simulated donation behavior using binary outcomes based on the actual probabilities observed in the experiment:
+
+- Control group: Bernoulli(p = 0.018)
+
+- Treatment group: Bernoulli(p = 0.022)
+
+I drew:
+
+- 100,000 values from the control distribution
+
+- 10,000 values from the treatment distribution
+
+Then, I matched each of the 10,000 treatment draws with a randomly selected control draw and computed their difference. This resulted in a vector of 10,000 differences. The plot below shows the cumulative average of these differences across simulations:
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+
+control_draws = np.random.binomial(1, 0.018, 100000)
+treatment_draws = np.random.binomial(1, 0.022, 10000)
+
+control_sample = np.random.choice(control_draws, size=10000, replace=False)
+
+differences = treatment_draws - control_sample
+cumulative_avg = np.cumsum(differences) / np.arange(1, len(differences) + 1)
+
+plt.figure(figsize=(10, 5))
+plt.plot(cumulative_avg, color="blue", linewidth=1)
+plt.axhline(y=0.004, color='red', linestyle='--', label='True Difference (0.022 - 0.018)')
+plt.title("Cumulative Average of Differences: Treatment vs. Control")
+plt.xlabel("Number of Simulations")
+plt.ylabel("Cumulative Average Difference")
+plt.legend()
+plt.grid(True)
+```
+This plot clearly demonstrates the Law of Large Numbers in action, showing that as the number of samples increases, the cumulative average of the differences steadily converges toward the true population mean. Despite early fluctuations due to sampling noise, the average stabilizes with more observations, illustrating how even noisy individual data can produce accurate and reliable estimates of treatment effects when the sample size is sufficiently large.
+
+
+### Central Limit Theorem
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+
+control_p = 0.018
+treatment_p = 0.022
+sample_sizes = [50, 200, 500, 1000]
+n_simulations = 1000
+
+simulated_distributions = {}
+
+for n in sample_sizes:
+    avg_diffs = []
+    for _ in range(n_simulations):
+        control = np.random.binomial(1, control_p, n)
+        treatment = np.random.binomial(1, treatment_p, n)
+        avg_diffs.append(np.mean(treatment) - np.mean(control))
+    simulated_distributions[n] = avg_diffs
+
+fig, axes = plt.subplots(2, 2, figsize=(12, 8))
+axes = axes.flatten()
+
+for i, n in enumerate(sample_sizes):
+    diffs = simulated_distributions[n]
+    axes[i].hist(diffs, bins=50, color="lightblue", edgecolor="black", density=True)
+    axes[i].axvline(0, color='red', linestyle='--', linewidth=2, label='Zero')
+    axes[i].axvline(np.mean(diffs), color='green', linestyle='-', linewidth=2, label='Mean')
+    axes[i].set_title(f"Sample Size = {n}")
+    axes[i].set_xlabel("Avg Difference (Treatment - Control)")
+    axes[i].set_ylabel("Density")
+    axes[i].legend()
+
+plt.tight_layout()
+plt.show()
+```

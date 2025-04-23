@@ -1,7 +1,7 @@
 project:
   type: website
   output-dir: docs
-  
+
 website:
   title: "Emma's Website"
   navbar:
@@ -10,6 +10,8 @@ website:
         text: Home
       - href: resume.qmd
         text: Resume
+      - href: blog.qmd
+        text: Projects
 
 format:
   html:
