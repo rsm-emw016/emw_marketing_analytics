@@ -172,6 +172,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#law-of-large-numbers" id="toc-law-of-large-numbers" class="nav-link" data-scroll-target="#law-of-large-numbers">Law of Large Numbers</a></li>
   <li><a href="#central-limit-theorem" id="toc-central-limit-theorem" class="nav-link" data-scroll-target="#central-limit-theorem">Central Limit Theorem</a></li>
   </ul></li>
+  <li><a href="#conclusion-1" id="toc-conclusion-1" class="nav-link" data-scroll-target="#conclusion-1">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -245,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="data">Data</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<div id="f97355b6" class="cell" data-execution_count="1">
+<div id="2d1857b1" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -505,7 +506,7 @@ Variable Definitions
 <li><p>Two-sample t-tests</p></li>
 <li><p>Simple linear regressions</p></li>
 </ul>
-<div id="89201fe3" class="cell" data-execution_count="2">
+<div id="ec2eab1d" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -623,7 +624,7 @@ Variable Definitions
 <section id="charitable-contribution-made" class="level3">
 <h3 class="anchored" data-anchor-id="charitable-contribution-made">Charitable Contribution Made</h3>
 <p>First, I analyze whether matched donations lead to an increased response rate of making a donation.</p>
-<div id="ef5fc87e" class="cell" data-execution_count="3">
+<div id="5fd7a517" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -660,7 +661,7 @@ Variable Definitions
 </div>
 </div>
 <p>Based on the barplot above, we can compare donation behavior between individuals who received different versions of a fundraising letter. Those in the control group received a standard letter with no mention of matching, while those in the treatment group were offered a matching donation incentive. Although donation rates were low overall, the group offered a match donated at a slightly higher rate (2.2%) compared to the group without a match (1.8%). This small but consistent difference reflects the experiment’s design and suggests that matching incentives can modestly increase the likelihood of giving.</p>
-<div id="c57bef9f" class="cell" data-execution_count="4">
+<div id="fc6ae915" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -682,7 +683,7 @@ Variable Definitions
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="ce823710" class="cell" data-execution_count="5">
+<div id="ae5d3cc0" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
@@ -724,7 +725,7 @@ Variable Definitions
 </table>
 <p>This table compares the results of a t-test and an OLS regression, both examining whether offering a donation match increases the likelihood of giving. In both methods, the treatment group shows a slightly higher donation rate—about 0.42 percentage points more than the control group. Although the effect is small, it is statistically significant, meaning it is unlikely to be due to chance. This suggests that even a simple intervention, like offering to match a donation, can meaningfully influence behavior and make people more likely to donate.</p>
 <p>Then, I ran a probit regression where the outcome variable is whether a person donated (<code>gave</code>), and the explanatory variable is whether they were assigned to receive a matching offer (<code>treatment</code>). The results below are based on the latent (probit) scale.</p>
-<div id="0c15d995" class="cell" data-execution_count="6">
+<div id="a7d55f54" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -784,7 +785,7 @@ Variable Definitions
 </table>
 <p>The positive and statistically significant coefficient on <code>treatment</code> indicates that being assigned to receive a matching offer increases the likelihood of donation. While this estimate is on the latent (probit) scale, the significance (p = 0.002) confirms a clear effect.</p>
 <p>To translate this to a change in predicted probability, we can compute the marginal effect (see below).</p>
-<div id="43a373ca" class="cell" data-execution_count="7">
+<div id="7cd1dbe8" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
@@ -804,7 +805,7 @@ Variable Definitions
          Current function value: 0.100443
          Iterations 7</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="98">
+<div class="cell-output cell-output-display" data-execution_count="124">
 <div>
 
 
@@ -844,7 +845,7 @@ Variable Definitions
 <section id="t-test-results" class="level4">
 <h4 class="anchored" data-anchor-id="t-test-results">T-Test Results</h4>
 <p>I first conducted pairwise t-tests comparing the proportion of individuals who donated (<code>gave</code>) under different match ratios:</p>
-<div id="9b4e7315" class="cell" data-execution_count="8">
+<div id="61d7a904" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -875,7 +876,7 @@ Variable Definitions
 <span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>results_df <span class="op">=</span> pd.DataFrame(summary)</span>
 <span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>results_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="99">
+<div class="cell-output cell-output-display" data-execution_count="125">
 <div>
 
 
@@ -932,7 +933,7 @@ Variable Definitions
 <section id="logistic-regression" class="level4">
 <h4 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h4>
 <p>Next, I ran a logistic regression to model the probability of donating as a function of match ratio:</p>
-<div id="3d97864b" class="cell" data-execution_count="9">
+<div id="a64cb867" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -952,7 +953,7 @@ Variable Definitions
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Print result</span></span>
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>reg.summary2().tables[<span class="dv">1</span>].<span class="bu">round</span>(<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="100">
+<div class="cell-output cell-output-display" data-execution_count="126">
 <div>
 
 
@@ -1018,7 +1019,7 @@ Variable Definitions
 <li><strong>Direct from the data</strong>: I calculated the mean of the <code>gave</code> variable for each match group (within the treatment group).</li>
 <li><strong>From the regression model</strong>: Since each coefficient in the no-intercept OLS regression represents the donation rate for that group, I subtracted the coefficients to compute differences.</li>
 </ul>
-<div id="c7c65d76" class="cell" data-execution_count="10">
+<div id="0ab1c9fe" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show code for response-rate differences</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1052,7 +1053,7 @@ Variable Definitions
 <pre><code>/var/folders/yf/g_800hts37z9ftxfvzrc1fc80000gn/T/ipykernel_14336/1559164577.py:9: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
   means = treated.groupby("ratio")["gave"].mean()</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="101">
+<div class="cell-output cell-output-display" data-execution_count="127">
 <div>
 
 
@@ -1163,7 +1164,7 @@ Variable Definitions
 </tbody>
 </table>
 <p>The treatment group gave slightly less, but the difference is not statistically significant. There is no causal interpretation. Since we’re conditioning on a post-treatment behavior (having donated), this breaks randomization and introduces selection bias. Therefore, this result is descriptive only, not causal.</p>
-<div id="4a423379" class="cell" data-execution_count="11">
+<div id="f811764e" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1219,7 +1220,7 @@ Variable Definitions
 <section id="law-of-large-numbers" class="level3">
 <h3 class="anchored" data-anchor-id="law-of-large-numbers">Law of Large Numbers</h3>
 <p>To illustrate the Law of Large Numbers (LLN), I simulated donation behavior using binary outcomes based on the actual probabilities observed in the experiment:</p>
-<div id="879bd58c" class="cell" data-execution_count="12">
+<div id="d5800962" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1257,7 +1258,7 @@ Variable Definitions
 <section id="central-limit-theorem" class="level3">
 <h3 class="anchored" data-anchor-id="central-limit-theorem">Central Limit Theorem</h3>
 <p>To visualize how the sampling distribution of the average difference behaves, I simulated four experiments using increasing sample sizes: 50, 200, 500, and 1000. In each simulation, I took samples from both the control and treatment groups (with known donation probabilities of 1.8% and 2.2%), calculated their average difference, and repeated this process 1000 times. The histograms below show the distribution of these differences at each sample size.</p>
-<div id="ada0a32f" class="cell" data-execution_count="13">
+<div id="ed4d8dec" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1305,9 +1306,14 @@ Variable Definitions
 </div>
 </div>
 <p>As we can see, when the sample size is small (n = 50), the distribution is wide and noisy, and the value of zero is often near the center—indicating we might fail to detect any effect. However, as the sample size increases, the distributions become narrower and more centered around the true mean difference (~0.004), pushing zero toward the tails. This demonstrates the Central Limit Theorem: with larger sample sizes, the distribution of the sample mean becomes more normal and concentrated, making it easier to detect small but real differences in behavior.</p>
-
-
 </section>
+</section>
+<section id="conclusion-1" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion-1">Conclusion</h2>
+<p>This project explored how different fundraising strategies—especially the use of matching donations—influence charitable giving. Using data from a large-scale natural field experiment, I found that simply offering a match increases both the likelihood of donating and the average donation amount. However, increasing the match ratio beyond 1:1 (to 2:1 or 3:1) provided little to no additional impact. This pattern was confirmed across multiple methods, including t-tests, linear regressions, and probit models.</p>
+<p>The findings suggest that <strong>the presence of a match matters more than the size of the match</strong>. In other words, offering any match can be a powerful behavioral nudge, but bigger incentives don’t necessarily lead to bigger results. For fundraisers, this means that even simple interventions can have a meaningful effect—and they don’t always need to be expensive to be effective.</p>
+
+
 </section>
 
 </main> <!-- /main -->
