@@ -12,6 +12,12 @@ Karlan and List conducted a large-scale natural field experiment with over 50,00
 
 This setup allowed the researchers to test whether lowering the “price” of giving through matching offers increased donations. They also studied how the effects varied by political affiliation (red vs. blue states), donor history, and demographic characteristics. The findings have practical value for fundraisers and offer new insights into altruism and public goods theory. 
 
+| Factor           | Levels                                                                |
+|----------------------|----------------------------------------------------------------------------|
+| Match ratio          | 1:1, 2:1, 3:1                                                              |
+| Maximum pledge       | $25k, $50k, $100k, or unstated                                             |
+| Example ask amount   | Donor’s highest previous gift, 1.25× that gift, 1.50× that gift           |
+
 ## Data
 
 ### Description
