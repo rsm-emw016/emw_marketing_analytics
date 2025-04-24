@@ -25,6 +25,28 @@ This project seeks to replicate their results.
 
 ### Description
 
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+import pandas as pd
+df = pd.read_stata('/Users/bibibingya/Downloads/emw_marketing_analytics/blog/project2/karlan_list_2007.dta')
+variables_to_test = ['mrm2', 'years', 'freq', 'female']
+```
+
+This dataset contains information from a large-scale natural field experiment conducted by Karlan and List (2007) to study charitable giving behavior. It includes 50,083 observations and 51 variables related to donation behavior, treatment assignments, demographics, and geographic context.
+
+Each row represents an individual who received a fundraising letter. Key variables include:
+
+- Treatment assignment (treatment, control, ratio, size, ask)
+- Donation outcome (gave, amount, amountchange)
+- Donor characteristics (e.g., female, freq, years, mrm2)
+- Census and geographic info (pwhite, median_hhincome, redcty, etc.)
+
+There are some missing values in the demographic and geographic variables (e.g., pwhite, median_hhincome), but core variables like gave and treatment are complete.
+
+This dataset supports analysis of how different fundraising strategies—such as offering matching donations or suggesting different donation amounts—affect donor response rates and amounts given.
+
+:::: {.callout-note collapse="true"}
 ### Variable Definitions
 
 | Variable             | Description                                                         |
@@ -82,6 +104,7 @@ This project seeks to replicate their results.
 | `pop_propurban`      | Proportion of population urban within zip code                      |
 
 ::::
+
 
 ### Balance Test 
 
@@ -278,6 +301,7 @@ Offering to match a donor’s gift really does make a difference. According to t
 
 ### Differences between Match Rates
 
+Next, I assess the effectiveness of different sizes of matched donations on the response rate.
 To evaluate how the size of the match ratio influences donation behavior, I compared response rates across match conditions using both **t-tests** and **logistic regression**.
 
 #### T-Test Results
@@ -401,6 +425,10 @@ diff_table
 Although donation rates are statistically significant in all groups, the differences between them are small. This suggests that simply offering a match boosts giving, but increasing the match ratio beyond 1:1 doesn’t significantly improve donation response. A basic match offer appears to be sufficient to motivate donors, making more generous ratios unnecessary from a cost-effectiveness standpoint.
 
 ### Size of Charitable Contribution
+
+
+In this subsection, I analyze the effect of the size of matched donation on the size of the charitable contribution.
+
 
 #### Unconditional Analysis (All Participants)
 
