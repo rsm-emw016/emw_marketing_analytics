@@ -18,6 +18,9 @@ This setup allowed the researchers to test whether lowering the “price” of g
 | Maximum pledge       | $25k, $50k, $100k, or unstated                                             |
 | Example ask amount   | Donor’s highest previous gift, 1.25× that gift, 1.50× that gift           |
 
+This project seeks to replicate their results.
+
+
 ## Data
 
 ### Description
