@@ -244,7 +244,7 @@ window.Quarto = {
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
-<div id="09f13340" class="cell" data-execution_count="1">
+<div id="79648bbd" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -252,7 +252,7 @@ window.Quarto = {
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="dd23bab0" class="cell" data-execution_count="2">
+<div id="8fcf3ce8" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -304,7 +304,7 @@ window.Quarto = {
 </table>
 <p>From the chart and table, we can see that Blueprinty customers tend to have more patents than non-customers. On average, customers have 4.13 patents, while non-customers have 3.47. The histogram shows that customers are more likely to appear in the higher end of the distribution.</p>
 <p>However, it’s important to remember that customers are not randomly selected. That means we cannot say for sure that being a customer causes someone to have more patents. It’s possible that customers are already different before joining—perhaps they are more experienced, innovative, or come from regions or industries with higher patent activity.</p>
-<div id="2a6aa200" class="cell" data-execution_count="3">
+<div id="5544d2a7" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -356,7 +356,7 @@ window.Quarto = {
 </tbody>
 </table>
 <p>Customers tend to be slightly older than non-customers. The age distribution plot shows that customers are more concentrated in the 20–35 age range, while non-customers are more evenly spread out. Although the difference is modest, it suggests that age may play a role in who becomes a customer, and should be considered when comparing outcomes like patent ownership.</p>
-<div id="be795850" class="cell" data-execution_count="4">
+<div id="d5bde1ca" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -439,7 +439,7 @@ This gives us the log-likelihood:</p>
 = -n\lambda + \left( \sum_{i=1}^{n} Y_i \right) \log \lambda - \sum_{i=1}^{n} \log(Y_i!)\)</span></p>
 <hr>
 <p>To better understand the relationship between λ (lambda) and the observed data, we now walk through a full maximum likelihood estimation process for the Poisson model.</p>
-<div id="4880d2ce" class="cell" data-execution_count="5">
+<div id="f23d16a5" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -517,7 +517,7 @@ This gives us the log-likelihood:</p>
 <section id="estimation-of-poisson-regression-model" class="level3">
 <h3 class="anchored" data-anchor-id="estimation-of-poisson-regression-model">Estimation of Poisson Regression Model</h3>
 <p>Next, we extend our simple Poisson model to a Poisson Regression Model such that <span class="math inline">\(Y_i = \text{Poisson}(\lambda_i)\)</span> where <span class="math inline">\(\lambda_i = \exp(X_i'\beta)\)</span>. The interpretation is that the success rate of patent awards is not constant across all firms (<span class="math inline">\(\lambda\)</span>) but rather is a function of firm characteristics <span class="math inline">\(X_i\)</span>. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.</p>
-<div id="230e492a" class="cell" data-execution_count="6">
+<div id="353011bf" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -693,7 +693,7 @@ Variable Definitions
 </div>
 </div>
 </div>
-<div id="269984bb" class="cell" data-execution_count="7">
+<div id="7932d9b4" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -705,7 +705,8 @@ Variable Definitions
 <section id="data-exploration-and-cleaning" class="level3">
 <h3 class="anchored" data-anchor-id="data-exploration-and-cleaning">Data Exploration and Cleaning</h3>
 <p>Before modeling, we explore and clean the dataset to ensure that it contains only relevant and usable observations. We also perform some basic exploratory data analysis (EDA) to better understand the distribution and relationships among key variables.</p>
-<div id="2531cc2e" class="cell" data-execution_count="8">
+<p>To understand the distribution of listing types, we first look at how many units fall into each room category.</p>
+<div id="fa1ea3dd" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -744,7 +745,7 @@ Variable Definitions
 </tbody>
 </table>
 <p>We see that most listings are either entire homes or private rooms. Shared rooms are relatively rare in the dataset, making up less than 3% of listings.</p>
-<div id="0366b25e" class="cell" data-execution_count="9">
+<div id="83532f93" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -770,7 +771,7 @@ Variable Definitions
 <span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>df_clean[[<span class="st">"price"</span>, <span class="st">"bathrooms"</span>, <span class="st">"bedrooms"</span>, <span class="st">"number_of_reviews"</span>]].describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Below is a summary of the main numeric variables, including price, number of bathrooms and bedrooms, and the number of reviews (which we will use as a proxy for bookings):</p>
+<p>Next, we explore the core numeric variables such as price, bedrooms, and number of reviews. This gives us a sense of the data’s central tendency, spread, and potential outliers.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 16%">
@@ -864,7 +865,8 @@ Why This Matters
 <p>The skewed distribution confirms that a Poisson model — which is well-suited for modeling count data — is appropriate for this task.</p>
 </div>
 </div>
-<div id="85a122d0" class="cell" data-execution_count="10">
+<p>We visualize the overall distribution of review counts to further confirm its skewness. This outcome variable will serve as our target in the Poisson regression.</p>
+<div id="bb8e38b0" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -893,8 +895,8 @@ Why This Matters
 </div>
 </div>
 </div>
-<p>The boxplot shows how the number of reviews differs by room type. Private rooms and entire homes/apartments tend to have a wider spread of review counts, with many listings receiving over 100 reviews. Shared rooms receive fewer reviews on average. This suggests that travelers may prefer private or full-space options, and that those listings are likely booked more often.</p>
-<div id="4a6b9e1e" class="cell" data-execution_count="11">
+<p>We now compare review activity across different room types to see if guests prefer specific listing categories. The boxplot shows how the number of reviews differs by room type. Private rooms and entire homes/apartments tend to have a wider spread of review counts, with many listings receiving over 100 reviews. Shared rooms receive fewer reviews on average. This suggests that travelers may prefer private or full-space options, and that those listings are likely booked more often.</p>
+<div id="d813fba5" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -922,8 +924,8 @@ Why This Matters
 </div>
 </div>
 </div>
-<p>The scatterplot reveals the relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.</p>
-<div id="ba8294cc" class="cell" data-execution_count="12">
+<p>To explore whether price affects popularity, we examine the relationship between listing price and number of reviews. The scatterplot shows a weak inverse relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.</p>
+<div id="9f7e2947" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -952,14 +954,14 @@ Why This Matters
 </div>
 </div>
 </div>
-<p>Next, we examine the pairwise correlations between numeric variables using a heatmap. This helps identify which features are most linearly related to each other, and can also help diagnose multicollinearity before modeling.</p>
+<p>Finally, we look at how numeric variables relate to one another. This helps identify strong pairwise relationships and avoid multicollinearity in modeling.</p>
 <p>Key observations:</p>
 <ul>
 <li><code>review_scores_cleanliness</code> and <code>review_scores_value</code> have a relatively strong positive correlation (~0.62).</li>
 <li><code>price</code> and <code>number_of_reviews</code> are almost uncorrelated (~−0.002), which supports what we observed visually.</li>
 <li>Cleanliness and location scores tend to correlate moderately with other review-based features.</li>
 </ul>
-<div id="1af19490" class="cell" data-execution_count="13">
+<div id="924ac0b6" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
@@ -989,11 +991,12 @@ Why This Matters
 </div>
 </div>
 </div>
+<p>From these exploratory insights, we observe several patterns worth testing formally. In the next section, we fit a Poisson regression model to quantify which features are most associated with review count.</p>
 </section>
 <section id="modeling-poisson-regression" class="level3">
 <h3 class="anchored" data-anchor-id="modeling-poisson-regression">Modeling: Poisson Regression</h3>
 <p>We now build a Poisson regression model to understand what factors are associated with higher booking activity on Airbnb, using <code>number_of_reviews</code> as a proxy for the number of bookings.</p>
-<div id="3d19443c" class="cell" data-execution_count="14">
+<div id="cde5831b" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
@@ -1037,7 +1040,7 @@ Why This Matters
 <span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>poisson_model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Below is a summary of the estimated coefficients and their interpretation:</p>
+<p>The table below summarizes the estimated coefficients and their interpretation. Coefficients are in log scale, so we exponentiate them to interpret as % change in expected review count.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 23%">

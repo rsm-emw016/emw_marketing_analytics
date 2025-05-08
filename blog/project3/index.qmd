@@ -359,6 +359,8 @@ df.head()
 ### Data Exploration and Cleaning 
 Before modeling, we explore and clean the dataset to ensure that it contains only relevant and usable observations. We also perform some basic exploratory data analysis (EDA) to better understand the distribution and relationships among key variables.
 
+To understand the distribution of listing types, we first look at how many units fall into each room category.
+
 ```{python}
 #| code-fold: true
 #| code-summary: "Code"
@@ -411,7 +413,7 @@ df_clean = pd.concat([df_clean, room_dummies], axis=1)
 df_clean[["price", "bathrooms", "bedrooms", "number_of_reviews"]].describe()
 ```
 
-Below is a summary of the main numeric variables, including price, number of bathrooms and bedrooms, and the number of reviews (which we will use as a proxy for bookings):
+Next, we explore the core numeric variables such as price, bedrooms, and number of reviews. This gives us a sense of the data’s central tendency, spread, and potential outliers.
 
 | Statistic | `price` | `bathrooms` | `bedrooms` | `number_of_reviews` |
 |-----------|---------|-------------|------------|----------------------|
@@ -435,6 +437,9 @@ The histogram below shows a highly right-skewed distribution. Most listings rece
 ::: {.callout-note title="Why This Matters"}
 The skewed distribution confirms that a Poisson model — which is well-suited for modeling count data — is appropriate for this task.
 :::
+
+We visualize the overall distribution of review counts to further confirm its skewness. This outcome variable will serve as our target in the Poisson regression.
+
 ```{python}
 #| code-fold: true
 #| code-summary: "Code"
@@ -456,8 +461,7 @@ plt.xlabel("Number of Reviews")
 plt.ylabel("Count")
 plt.show()
 ```
-
-The boxplot shows how the number of reviews differs by room type. Private rooms and entire homes/apartments tend to have a wider spread of review counts, with many listings receiving over 100 reviews. Shared rooms receive fewer reviews on average. This suggests that travelers may prefer private or full-space options, and that those listings are likely booked more often.
+We now compare review activity across different room types to see if guests prefer specific listing categories. The boxplot shows how the number of reviews differs by room type. Private rooms and entire homes/apartments tend to have a wider spread of review counts, with many listings receiving over 100 reviews. Shared rooms receive fewer reviews on average. This suggests that travelers may prefer private or full-space options, and that those listings are likely booked more often.
 
 ```{python}
 #| code-fold: true
@@ -479,8 +483,7 @@ sns.boxplot(x="room_type", y="number_of_reviews", data=df_clean)
 plt.title("Number of Reviews by Room Type")
 plt.show()
 ```
-
-The scatterplot reveals the relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.
+To explore whether price affects popularity, we examine the relationship between listing price and number of reviews. The scatterplot shows a weak inverse relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.
 
 ```{python}
 #| code-fold: true
@@ -504,7 +507,7 @@ plt.title("Price vs Number of Reviews")
 plt.show()
 ```
 
-Next, we examine the pairwise correlations between numeric variables using a heatmap. This helps identify which features are most linearly related to each other, and can also help diagnose multicollinearity before modeling.
+Finally, we look at how numeric variables relate to one another. This helps identify strong pairwise relationships and avoid multicollinearity in modeling.
 
 Key observations:
 
@@ -535,7 +538,7 @@ sns.heatmap(df_clean[[
 plt.title("Correlation Heatmap")
 plt.show()
 ```
-
+From these exploratory insights, we observe several patterns worth testing formally. In the next section, we fit a Poisson regression model to quantify which features are most associated with review count.
 
 ### Modeling: Poisson Regression
 We now build a Poisson regression model to understand what factors are associated with higher booking activity on Airbnb, using `number_of_reviews` as a proxy for the number of bookings.
@@ -585,8 +588,7 @@ poisson_model = sm.GLM(y_model, X_model, family=sm.families.Poisson()).fit()
 poisson_model.summary()
 ```
 
-Below is a summary of the estimated coefficients and their interpretation:
-
+The table below summarizes the estimated coefficients and their interpretation. Coefficients are in log scale, so we exponentiate them to interpret as % change in expected review count.
 
 | Variable                | Coefficient | Std. Error | p-value | Interpretation                                 |
 |-------------------------|-------------|-------------|---------|------------------------------------------------|
