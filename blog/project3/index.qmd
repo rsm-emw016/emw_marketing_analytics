@@ -426,6 +426,39 @@ Below is a summary of the main numeric variables, including price, number of bat
 
 The average nightly price for a listing is $140, but prices vary widely, with some as low as $10 and a few as high as $10,000 — indicating potential outliers. Most listings have just one bathroom and bedroom. The average number of reviews is 21.17, but the maximum reaches 421, which suggests a strong right-skew in review counts. This supports the idea that some listings are booked (and reviewed) far more frequently than others.
 
+---
+
+We begin by exploring the overall distribution of review counts across listings. Since `number_of_reviews` is our proxy for bookings, it's important to understand how this outcome behaves.
+
+The histogram below shows a highly right-skewed distribution. Most listings receive fewer than 30 reviews, with a large number of listings receiving fewer than 10. A small number of listings stand out with over 200 reviews — these will have a large influence on our model.
+
+::: {.callout-note title="Why This Matters"}
+The skewed distribution confirms that a Poisson model — which is well-suited for modeling count data — is appropriate for this task.
+:::
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+df = pd.read_csv('airbnb.csv')
+
+columns_to_keep = [
+    "room_type", "bathrooms", "bedrooms", "price",
+    "number_of_reviews", "review_scores_cleanliness",
+    "review_scores_location", "review_scores_value",
+    "instant_bookable"
+]
+df_clean = df.dropna(subset=columns_to_keep)
+sns.histplot(df_clean["number_of_reviews"], bins=50)
+plt.title("Distribution of Number of Reviews")
+plt.xlabel("Number of Reviews")
+plt.ylabel("Count")
+plt.show()
+```
+
+The boxplot shows how the number of reviews differs by room type. Private rooms and entire homes/apartments tend to have a wider spread of review counts, with many listings receiving over 100 reviews. Shared rooms receive fewer reviews on average. This suggests that travelers may prefer private or full-space options, and that those listings are likely booked more often.
+
 ```{python}
 #| code-fold: true
 #| code-summary: "Code"
@@ -447,7 +480,7 @@ plt.title("Number of Reviews by Room Type")
 plt.show()
 ```
 
-The boxplot shows how the number of reviews differs by room type. Private rooms and entire homes/apartments tend to have a wider spread of review counts, with many listings receiving over 100 reviews. Shared rooms receive fewer reviews on average. This suggests that travelers may prefer private or full-space options, and that those listings are likely booked more often.
+The scatterplot reveals the relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.
 
 ```{python}
 #| code-fold: true
@@ -471,29 +504,14 @@ plt.title("Price vs Number of Reviews")
 plt.show()
 ```
 
-The scatterplot reveals the relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.
+Next, we examine the pairwise correlations between numeric variables using a heatmap. This helps identify which features are most linearly related to each other, and can also help diagnose multicollinearity before modeling.
 
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
-df = pd.read_csv('airbnb.csv')
+Key observations:
 
-columns_to_keep = [
-    "room_type", "bathrooms", "bedrooms", "price",
-    "number_of_reviews", "review_scores_cleanliness",
-    "review_scores_location", "review_scores_value",
-    "instant_bookable"
-]
-df_clean = df.dropna(subset=columns_to_keep)
-sns.histplot(df_clean["number_of_reviews"], bins=50)
-plt.title("Distribution of Number of Reviews")
-plt.xlabel("Number of Reviews")
-plt.ylabel("Count")
-plt.show()
-```
+- `review_scores_cleanliness` and `review_scores_value` have a relatively strong positive correlation (~0.62).
+- `price` and `number_of_reviews` are almost uncorrelated (~−0.002), which supports what we observed visually.
+- Cleanliness and location scores tend to correlate moderately with other review-based features.
+
 
 ```{python}
 #| code-fold: true
