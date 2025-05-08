@@ -359,6 +359,30 @@ df.head()
 ### Data Exploration and Cleaning 
 Before modeling, we explore and clean the dataset to ensure that it contains only relevant and usable observations. We also perform some basic exploratory data analysis (EDA) to better understand the distribution and relationships among key variables.
 
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+#| output: false
+import pandas as pd
+df = pd.read_csv('airbnb.csv')
+
+columns_to_keep = [
+    "room_type", "bathrooms", "bedrooms", "price",
+    "number_of_reviews", "review_scores_cleanliness",
+    "review_scores_location", "review_scores_value",
+    "instant_bookable"
+]
+df_clean = df.dropna(subset=columns_to_keep)
+df_clean["room_type"].value_counts()
+```
+
+| Room Type         | Count |
+|-------------------|-------|
+| Entire home/apt   | 15,543 |
+| Private room      | 13,773 |
+| Shared room       | 844    |
+
+We see that most listings are either entire homes or private rooms. Shared rooms are relatively rare in the dataset, making up less than 3% of listings.
 
 ```{python}
 #| code-fold: true
@@ -449,6 +473,51 @@ plt.show()
 
 The scatterplot reveals the relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.
 
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+df = pd.read_csv('airbnb.csv')
+
+columns_to_keep = [
+    "room_type", "bathrooms", "bedrooms", "price",
+    "number_of_reviews", "review_scores_cleanliness",
+    "review_scores_location", "review_scores_value",
+    "instant_bookable"
+]
+df_clean = df.dropna(subset=columns_to_keep)
+sns.histplot(df_clean["number_of_reviews"], bins=50)
+plt.title("Distribution of Number of Reviews")
+plt.xlabel("Number of Reviews")
+plt.ylabel("Count")
+plt.show()
+```
+
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+df = pd.read_csv('airbnb.csv')
+
+columns_to_keep = [
+    "room_type", "bathrooms", "bedrooms", "price",
+    "number_of_reviews", "review_scores_cleanliness",
+    "review_scores_location", "review_scores_value",
+    "instant_bookable"
+]
+df_clean = df.dropna(subset=columns_to_keep)
+sns.heatmap(df_clean[[
+    "price", "number_of_reviews", "review_scores_cleanliness",
+    "review_scores_location", "review_scores_value"
+]].corr(), annot=True, cmap="coolwarm")
+plt.title("Correlation Heatmap")
+plt.show()
+```
+
 
 ### Modeling: Poisson Regression
 We now build a Poisson regression model to understand what factors are associated with higher booking activity on Airbnb, using `number_of_reviews` as a proxy for the number of bookings.
@@ -513,13 +582,33 @@ Below is a summary of the estimated coefficients and their interpretation:
 | Shared Room             | −0.2719     | 0.009       | 0.000   | ~24% fewer reviews than Entire home/apt       |
 
 
-- The `price` variable does **not** have a statistically significant effect on the number of reviews.
-- Review scores for cleanliness have a **positive effect**, while scores for location and value have **slightly negative effects**.
-- Listings that are **instantly bookable** tend to get around **40% more reviews**, which suggests higher guest interest or ease of booking.
-- Compared to **entire homes/apartments** (the reference room type), **private rooms** and especially **shared rooms** tend to receive fewer reviews, suggesting guests may prefer more private accommodations.
+- The `price` variable does not have a statistically significant effect on the number of reviews.
+- Review scores for cleanliness have a positive effect, while scores for location and value have slightly negative effects.
+- Listings that are instantly bookable tend to get around 40% more reviews, which suggests higher guest interest or ease of booking.
+- Compared to entire homes/apartments (the reference room type), private rooms and especially shared rooms tend to receive fewer reviews, suggesting guests may prefer more private accommodations.
 
 
 
 ### Result and Conclusion 
 
+After cleaning the dataset and conducting exploratory analysis, we used a Poisson regression model to identify which features are most associated with booking activity, as measured by the number of reviews. The model helps us understand how listing characteristics relate to the volume of guest interest and interaction.
+
+Based on the regression output, we observed several important insights:
+
+- Cleanliness score: Each one-point increase in cleanliness is associated with approximately 12% more reviews, highlighting the importance of guest perception of hygiene.
+- Instant bookability: Listings that are instantly bookable tend to receive around 40% more reviews — likely due to convenience and ease of booking.
+- Room type:
+  - Private rooms receive 3% fewer reviews than entire homes/apartments (the baseline).
+  - Shared rooms receive 24% fewer reviews, suggesting a clear guest preference for more privacy.
+- Price: Surprisingly, price does not have a statistically significant effect on review count in this dataset.
+- Location and value scores: Both showed statistically significant but slightly negative effects on reviews — possibly due to nonlinear relationships or correlation with other variables.
+
+
+These results suggest that Airbnb hosts aiming to increase booking activity should focus on the features that matter most to guests:
+
+- Enable **instant booking**,
+- Improve **cleanliness standards**
+- Offer **more private spaces**.
+
+Adjusting the listing price may be less effective on its own, especially if other core features do not meet guest expectations. These findings align with common user behavior — convenience, comfort, and perceived quality often drive engagement more than price alone.
 
