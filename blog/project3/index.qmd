@@ -359,6 +359,28 @@ df.head()
 ### Data Exploration and Cleaning 
 Before modeling, we explore and clean the dataset to ensure that it contains only relevant and usable observations. We also perform some basic exploratory data analysis (EDA) to better understand the distribution and relationships among key variables.
 
+Before we begin analysis or plotting, it's important to understand which variables have missing values and how significant the gaps are.
+
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+import pandas as pd
+df = pd.read_csv('airbnb.csv')
+
+missing_pct = df.isnull().mean().sort_values(ascending=False) * 100
+
+# Plot missingness
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(8, 6))
+missing_pct[missing_pct > 0].plot(kind='barh', color='skyblue')
+plt.title("Missing Data by Column")
+plt.xlabel("% missing")
+plt.tight_layout()
+plt.show()
+```
+Approximately 25% of listings are missing values in at least one of the review score fields — including cleanliness, location, or value ratings. In contrast, the rest of the dataset — including key variables such as price, bathrooms, bedrooms, and room_type — is largely complete, with fewer than 1% missing values. This gives us confidence that we can move forward with a clean dataset by removing only rows with missing review scores, while preserving most of the original sample.
+
 To understand the distribution of listing types, we first look at how many units fall into each room category.
 
 ```{python}
