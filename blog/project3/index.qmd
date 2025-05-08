@@ -347,13 +347,133 @@ AirBnB is a popular platform for booking short-term rentals. In March 2017, stud
 ::::
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Code"
+#| output: false
 import pandas as pd
 df = pd.read_csv('airbnb.csv')
 df.head()
 ```
-_todo: Assume the number of reviews is a good proxy for the number of bookings. Perform some exploratory data analysis to get a feel for the data, handle or drop observations with missing values on relevant variables, build one or more models (e.g., a poisson regression model for the number of bookings as proxied by the number of reviews), and interpret model coefficients to describe variation in the number of reviews as a function of the variables provided._
 
 
+### Data Exploration and Cleaning 
+Before modeling, we explore and clean the dataset to ensure that it contains only relevant and usable observations. We also perform some basic exploratory data analysis (EDA) to better understand the distribution and relationships among key variables.
 
+
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+#| output: false
+import pandas as pd
+df = pd.read_csv('airbnb.csv')
+df.isnull().sum()
+
+columns_to_keep = [
+    "room_type", "bathrooms", "bedrooms", "price",
+    "number_of_reviews", "review_scores_cleanliness",
+    "review_scores_location", "review_scores_value",
+    "instant_bookable"
+]
+
+df_clean = df.dropna(subset=columns_to_keep)
+df_clean.shape
+
+df_clean["price"] = df_clean["price"].replace("[\$,]", "", regex=True).astype(float)
+df_clean["instant_bookable"] = df_clean["instant_bookable"].map({"t": 1, "f": 0})
+room_dummies = pd.get_dummies(df_clean["room_type"], drop_first=True)
+df_clean = pd.concat([df_clean, room_dummies], axis=1)
+room_dummies = pd.get_dummies(df_clean["room_type"], drop_first=True)
+df_clean = pd.concat([df_clean, room_dummies], axis=1)
+df_clean[["price", "bathrooms", "bedrooms", "number_of_reviews"]].describe()
+```
+
+Below is a summary of the main numeric variables, including price, number of bathrooms and bedrooms, and the number of reviews (which we will use as a proxy for bookings):
+
+| Statistic | `price` | `bathrooms` | `bedrooms` | `number_of_reviews` |
+|-----------|---------|-------------|------------|----------------------|
+| Count     | 30160   | 30160       | 30160      | 30160                |
+| Mean      | 140.21  | 1.12        | 1.15       | 21.17                |
+| Std. Dev. | 188.39  | 0.38        | 0.70       | 32.01                |
+| Min       | 10.00   | 0.00        | 0.00       | 1.00                 |
+| 25%       | 70.00   | 1.00        | 1.00       | 3.00                 |
+| 50%       | 103.00  | 1.00        | 1.00       | 8.00                 |
+| 75%       | 169.00  | 1.00        | 1.00       | 26.00                |
+| Max       | 10000.00| 6.00        | 10.00      | 421.00         
+
+The average nightly price for a listing is $140, but prices vary widely, with some as low as $10 and a few as high as $10,000 — indicating potential outliers. Most listings have just one bathroom and bedroom. The average number of reviews is 21.17, but the maximum reaches 421, which suggests a strong right-skew in review counts. This supports the idea that some listings are booked (and reviewed) far more frequently than others.
+
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+df = pd.read_csv('airbnb.csv')
+
+columns_to_keep = [
+    "room_type", "bathrooms", "bedrooms", "price",
+    "number_of_reviews", "review_scores_cleanliness",
+    "review_scores_location", "review_scores_value",
+    "instant_bookable"
+]
+
+df_clean = df.dropna(subset=columns_to_keep)
+sns.boxplot(x="room_type", y="number_of_reviews", data=df_clean)
+plt.title("Number of Reviews by Room Type")
+plt.show()
+```
+
+The boxplot shows how the number of reviews differs by room type. Private rooms and entire homes/apartments tend to have a wider spread of review counts, with many listings receiving over 100 reviews. Shared rooms receive fewer reviews on average. This suggests that travelers may prefer private or full-space options, and that those listings are likely booked more often.
+
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pandas as pd
+df = pd.read_csv('airbnb.csv')
+
+columns_to_keep = [
+    "room_type", "bathrooms", "bedrooms", "price",
+    "number_of_reviews", "review_scores_cleanliness",
+    "review_scores_location", "review_scores_value",
+    "instant_bookable"
+]
+
+sns.scatterplot(x="price", y="number_of_reviews", data=df_clean)
+plt.xlim(0, 500)  # Remove extreme outliers
+plt.title("Price vs Number of Reviews")
+plt.show()
+```
+
+The scatterplot reveals the relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.
+
+
+### Modeling: Poisson Regression
+We now build a Poisson regression model to understand what factors are associated with higher booking activity on Airbnb, using `number_of_reviews` as a proxy for the number of bookings.
+
+```{python}
+import statsmodels.api as sm
+
+# Select covariates
+X_model = df_clean[[
+    "price",
+    "review_scores_cleanliness",
+    "review_scores_location",
+    "review_scores_value",
+    "instant_bookable",
+    "Private room",
+    "Shared room"
+]]
+X_model = sm.add_constant(X_model)  # add intercept
+y_model = df_clean["number_of_reviews"]
+
+# Fit Poisson regression model
+poisson_model = sm.GLM(y_model, X_model, family=sm.families.Poisson()).fit()
+poisson_model.summary()
+```
+
+
+### Result and Conclusion 
 
 
