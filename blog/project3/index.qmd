@@ -439,6 +439,7 @@ columns_to_keep = [
     "review_scores_location", "review_scores_value",
     "instant_bookable"
 ]
+df_clean = df.dropna(subset=columns_to_keep)
 
 sns.scatterplot(x="price", y="number_of_reviews", data=df_clean)
 plt.xlim(0, 500)  # Remove extreme outliers
@@ -453,9 +454,33 @@ The scatterplot reveals the relationship between listing price and number of rev
 We now build a Poisson regression model to understand what factors are associated with higher booking activity on Airbnb, using `number_of_reviews` as a proxy for the number of bookings.
 
 ```{python}
+#| code-fold: true
+#| code-summary: "Code"
+#| output: false
 import statsmodels.api as sm
+import pandas as pd
 
-# Select covariates
+# Load dataset
+df = pd.read_csv("airbnb.csv")
+
+# Drop missing values
+columns_to_keep = [
+    "room_type", "bathrooms", "bedrooms", "price",
+    "number_of_reviews", "review_scores_cleanliness",
+    "review_scores_location", "review_scores_value",
+    "instant_bookable"
+]
+df_clean = df.dropna(subset=columns_to_keep)
+
+# Clean and transform variables
+df_clean["price"] = df_clean["price"].replace("[\$,]", "", regex=True).astype(float)
+df_clean["instant_bookable"] = df_clean["instant_bookable"].map({"t": 1, "f": 0})
+
+# Create dummy variables for room_type
+room_dummies = pd.get_dummies(df_clean["room_type"], drop_first=True)
+df_clean = pd.concat([df_clean, room_dummies], axis=1)
+
+# Define predictors and outcome
 X_model = df_clean[[
     "price",
     "review_scores_cleanliness",
@@ -465,13 +490,34 @@ X_model = df_clean[[
     "Private room",
     "Shared room"
 ]]
-X_model = sm.add_constant(X_model)  # add intercept
+X_model = sm.add_constant(X_model).astype(float)
 y_model = df_clean["number_of_reviews"]
 
-# Fit Poisson regression model
+# Fit the Poisson regression model
 poisson_model = sm.GLM(y_model, X_model, family=sm.families.Poisson()).fit()
 poisson_model.summary()
 ```
+
+Below is a summary of the estimated coefficients and their interpretation:
+
+
+| Variable                | Coefficient | Std. Error | p-value | Interpretation                                 |
+|-------------------------|-------------|-------------|---------|------------------------------------------------|
+| Intercept               | 3.5554      | 0.015       | 0.000   | Baseline log review count                     |
+| Price                  | −0.0000022  | 0.0000075   | 0.769   | No significant effect                         |
+| Cleanliness Score       | 0.1135      | 0.001       | 0.000   | Higher cleanliness → more reviews             |
+| Location Score          | −0.0794     | 0.002       | 0.000   | Slightly lower reviews with higher location   |
+| Value Score             | −0.0921     | 0.002       | 0.000   | Slightly lower reviews with higher value      |
+| Instant Bookable        | 0.3331      | 0.003       | 0.000   | +40% more reviews if instantly bookable       |
+| Private Room            | −0.0319     | 0.003       | 0.000   | ~3% fewer reviews than Entire home/apt        |
+| Shared Room             | −0.2719     | 0.009       | 0.000   | ~24% fewer reviews than Entire home/apt       |
+
+
+- The `price` variable does **not** have a statistically significant effect on the number of reviews.
+- Review scores for cleanliness have a **positive effect**, while scores for location and value have **slightly negative effects**.
+- Listings that are **instantly bookable** tend to get around **40% more reviews**, which suggests higher guest interest or ease of booking.
+- Compared to **entire homes/apartments** (the reference room type), **private rooms** and especially **shared rooms** tend to receive fewer reviews, suggesting guests may prefer more private accommodations.
+
 
 
 ### Result and Conclusion 
