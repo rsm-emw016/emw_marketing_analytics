@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Emma Wu">
-<meta name="dcterms.date" content="2025-05-05">
+<meta name="dcterms.date" content="2025-05-07">
 
 <title>Poisson Regression Examples – Emma’s Website</title>
 <style>
@@ -220,7 +220,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 5, 2025</p>
+      <p class="date">May 7, 2025</p>
     </div>
   </div>
   
@@ -241,7 +241,7 @@ window.Quarto = {
 </section>
 <section id="data" class="level3">
 <h3 class="anchored" data-anchor-id="data">Data</h3>
-<div id="c3a211e8" class="cell" data-execution_count="1">
+<div id="0e612f9a" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -249,7 +249,7 @@ window.Quarto = {
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="b129dd8f" class="cell" data-execution_count="2">
+<div id="d3721b28" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -301,7 +301,7 @@ window.Quarto = {
 </table>
 <p>From the chart and table, we can see that Blueprinty customers tend to have more patents than non-customers. On average, customers have 4.13 patents, while non-customers have 3.47. The histogram shows that customers are more likely to appear in the higher end of the distribution.</p>
 <p>However, it’s important to remember that customers are not randomly selected. That means we cannot say for sure that being a customer causes someone to have more patents. It’s possible that customers are already different before joining—perhaps they are more experienced, innovative, or come from regions or industries with higher patent activity.</p>
-<div id="825ddf48" class="cell" data-execution_count="3">
+<div id="aa0ec018" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -353,7 +353,7 @@ window.Quarto = {
 </tbody>
 </table>
 <p>Customers tend to be slightly older than non-customers. The age distribution plot shows that customers are more concentrated in the 20–35 age range, while non-customers are more evenly spread out. Although the difference is modest, it suggests that age may play a role in who becomes a customer, and should be considered when comparing outcomes like patent ownership.</p>
-<div id="9b54ff09" class="cell" data-execution_count="4">
+<div id="8df8a5aa" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -436,7 +436,7 @@ This gives us the log-likelihood:</p>
 = -n\lambda + \left( \sum_{i=1}^{n} Y_i \right) \log \lambda - \sum_{i=1}^{n} \log(Y_i!)\)</span></p>
 <hr>
 <p>To better understand the relationship between λ (lambda) and the observed data, we now walk through a full maximum likelihood estimation process for the Poisson model.</p>
-<div id="86691d54" class="cell" data-execution_count="5">
+<div id="9949e53f" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -514,14 +514,147 @@ This gives us the log-likelihood:</p>
 <section id="estimation-of-poisson-regression-model" class="level3">
 <h3 class="anchored" data-anchor-id="estimation-of-poisson-regression-model">Estimation of Poisson Regression Model</h3>
 <p>Next, we extend our simple Poisson model to a Poisson Regression Model such that <span class="math inline">\(Y_i = \text{Poisson}(\lambda_i)\)</span> where <span class="math inline">\(\lambda_i = \exp(X_i'\beta)\)</span>. The interpretation is that the success rate of patent awards is not constant across all firms (<span class="math inline">\(\lambda\)</span>) but rather is a function of firm characteristics <span class="math inline">\(X_i\)</span>. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.</p>
-<p><em>todo: Update your likelihood or log-likelihood function with an additional argument to take in a covariate matrix X. Also change the parameter of the model from lambda to the beta vector. In this model, lambda must be a positive number, so we choose the inverse link function g_inv() to be exp() so that</em> <span class="math inline">\(\lambda_i = e^{X_i'\beta}\)</span>. <em>For example:</em></p>
-<pre><code>poisson_regression_likelihood &lt;- function(beta, Y, X){
-   ...
-}</code></pre>
-<p><em>todo: Use your function along with R’s optim() or Python’s sp.optimize() to find the MLE vector and the Hessian of the Poisson model with covariates. Specifically, the first column of X should be all 1’s to enable a constant term in the model, and the subsequent columns should be age, age squared, binary variables for all but one of the regions, and the binary customer variable. Use the Hessian to find standard errors of the beta parameter estimates and present a table of coefficients and standard errors.</em></p>
-<p><em>todo: Check your results using R’s glm() function or Python sm.GLM() function.</em></p>
-<p><em>todo: Interpret the results.</em></p>
-<p><em>todo: What do you conclude about the effect of Blueprinty’s software on patent success? Because the beta coefficients are not directly interpretable, it may help to create two fake datasets: X_0 and X_1 where X_0 is the X data but with iscustomer=0 for every observation and X_1 is the X data but with iscustomer=1 for every observation. Then, use X_0 and your fitted model to get the vector of predicted number of patents (y_pred_0) for every firm in the dataset, and use X_1 to get Y_pred_1 for every firm. Then subtract y_pred_1 minus y_pred_0 and take the average of that vector of differences.</em></p>
+<div id="e13ab460" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> gammaln</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Step 0: Load and prepare the data ----</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"blueprinty.csv"</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"age_sq"</span>] <span class="op">=</span> df[<span class="st">"age"</span>] <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>region_dummies <span class="op">=</span> pd.get_dummies(df[<span class="st">"region"</span>], drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Construct the design matrix X</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> pd.concat([</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    pd.Series(<span class="dv">1</span>, index<span class="op">=</span>df.index, name<span class="op">=</span><span class="st">"intercept"</span>),</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    df[[<span class="st">"age"</span>, <span class="st">"age_sq"</span>, <span class="st">"iscustomer"</span>]],</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    region_dummies</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"patents"</span>].values</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>X_matrix <span class="op">=</span> X.values</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Step 1: Define log-likelihood function with clipping to prevent overflow ----</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> poisson_loglikelihood(beta, Y, X):</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    beta <span class="op">=</span> np.asarray(beta, dtype<span class="op">=</span>np.float64)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> np.asarray(X, dtype<span class="op">=</span>np.float64)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    xb <span class="op">=</span> np.dot(X, beta)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    xb <span class="op">=</span> np.clip(xb, <span class="op">-</span><span class="dv">50</span>, <span class="dv">50</span>)  <span class="co"># prevent overflow in exp</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    lam <span class="op">=</span> np.exp(xb)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.<span class="bu">sum</span>(Y <span class="op">*</span> xb <span class="op">-</span> lam <span class="op">-</span> gammaln(Y <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Step 2: Define negative log-likelihood for minimization ----</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> neg_loglikelihood(beta, Y, X):</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>poisson_loglikelihood(beta, Y, X)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Step 3: Numerical optimization to find MLE ----</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>beta_init <span class="op">=</span> np.zeros(X.shape[<span class="dv">1</span>])</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>result <span class="op">=</span> minimize(neg_loglikelihood, beta_init, args<span class="op">=</span>(y, X_matrix), method<span class="op">=</span><span class="st">"BFGS"</span>)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="op">=</span> result.x</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>hessian_inv <span class="op">=</span> result.hess_inv</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>se_hat <span class="op">=</span> np.sqrt(np.diag(hessian_inv))</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co"># ---- Step 4: Present coefficient table ----</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>results_table <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Coefficient"</span>: beta_hat.<span class="bu">round</span>(<span class="dv">4</span>),</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Std. Error"</span>: se_hat.<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>X.columns)</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>results_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Coefficient</th>
+<th>Std. Error</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>intercept</td>
+<td>-0.5100</td>
+<td>0.0591</td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>0.1487</td>
+<td>0.0080</td>
+</tr>
+<tr class="odd">
+<td>age_sq</td>
+<td>-0.0030</td>
+<td>0.0002</td>
+</tr>
+<tr class="even">
+<td>iscustomer</td>
+<td>0.2076</td>
+<td>0.0289</td>
+</tr>
+<tr class="odd">
+<td>Northeast</td>
+<td>0.0292</td>
+<td>0.0540</td>
+</tr>
+<tr class="even">
+<td>Northwest</td>
+<td>-0.0176</td>
+<td>0.0668</td>
+</tr>
+<tr class="odd">
+<td>South</td>
+<td>0.0566</td>
+<td>0.0660</td>
+</tr>
+<tr class="even">
+<td>Southwest</td>
+<td>0.0506</td>
+<td>0.0597</td>
+</tr>
+</tbody>
+</table>
+<section id="interpreting-the-poisson-regression-results" class="level4">
+<h4 class="anchored" data-anchor-id="interpreting-the-poisson-regression-results">Interpreting the Poisson Regression Results</h4>
+<p>From our estimated Poisson regression model:</p>
+<ul>
+<li>The coefficient on <code>age</code> is <strong>0.1487</strong>, indicating that older firms tend to receive more patents.</li>
+<li>The negative coefficient on <code>age_sq</code> (<strong>−0.0030</strong>) suggests diminishing returns to age — patenting increases with age but at a decreasing rate.</li>
+<li>The coefficient on <code>iscustomer</code> is <strong>0.2076</strong>, meaning that being a Blueprinty customer increases the log of expected patent counts by this amount.</li>
+</ul>
+<p>To make this more interpretable, we exponentiate the <code>iscustomer</code> coefficient:</p>
+<p><br>
+<span class="math inline">\(\exp(0.2076) \approx 1.23\)</span><br>
+</p>
+<p>This implies that being a customer is associated with approximately a <strong>23% increase in expected patent output</strong>, holding other variables constant.</p>
+<hr>
+</section>
+<section id="interpreting-the-effect-of-blueprinty-counterfactual-simulation" class="level4">
+<h4 class="anchored" data-anchor-id="interpreting-the-effect-of-blueprinty-counterfactual-simulation">Interpreting the Effect of Blueprinty: Counterfactual Simulation</h4>
+<p>Because the coefficients are on a log scale, we simulate two counterfactual scenarios:</p>
+<ul>
+<li><strong><span class="math inline">\(X_0\)</span></strong>: All firms are treated as non-customers (<code>iscustomer = 0</code>)</li>
+<li><strong><span class="math inline">\(X_1\)</span></strong>: All firms are treated as Blueprinty customers (<code>iscustomer = 1</code>)</li>
+</ul>
+<p>We use our fitted model to compute:</p>
+<ul>
+<li><span class="math inline">\(\hat{y}_0\)</span> = predicted patents for <span class="math inline">\(X_0\)</span></li>
+<li><span class="math inline">\(\hat{y}_1\)</span> = predicted patents for <span class="math inline">\(X_1\)</span></li>
+<li>Average difference = <span class="math inline">\(\hat{y}_1 - \hat{y}_0\)</span></li>
+</ul>
+<p><br>
+<span class="math inline">\(\text{Average difference} = 0.79\)</span><br>
+</p>
+<p>This means Blueprinty customers are predicted to earn <strong>0.79 more patents</strong>, on average, than they would have if they weren’t customers.</p>
+<hr>
+</section>
+<section id="conclusion" class="level4">
+<h4 class="anchored" data-anchor-id="conclusion">Conclusion</h4>
+<p>Our analysis suggests that Blueprinty’s software has a <strong>positive and meaningful effect</strong> on patent success. While the impact of being a customer translates to fewer than one additional patent over five years, this is a substantial gain in innovation output, especially when aggregated across a large number of firms. These results highlight Blueprinty’s potential to support R&amp;D productivity.</p>
+</section>
 </section>
 </section>
 <section id="airbnb-case-study" class="level2">
@@ -557,11 +690,11 @@ Variable Definitions
 </div>
 </div>
 </div>
-<div id="213cda5e" class="cell" data-execution_count="6">
+<div id="e8299034" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">'airbnb.csv'</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="91">
 <div>
 
 

@@ -214,24 +214,111 @@ The table below confirms that both the analytical solution (sample mean) and the
 
 Next, we extend our simple Poisson model to a Poisson Regression Model such that $Y_i = \text{Poisson}(\lambda_i)$ where $\lambda_i = \exp(X_i'\beta)$. The interpretation is that the success rate of patent awards is not constant across all firms ($\lambda$) but rather is a function of firm characteristics $X_i$. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.
 
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+#| output: false
+import pandas as pd
+import numpy as np
+from scipy.optimize import minimize
+from scipy.special import gammaln
+import statsmodels.api as sm
 
-_todo: Update your likelihood or log-likelihood function with an additional argument to take in a covariate matrix X. Also change the parameter of the model from lambda to the beta vector. In this model, lambda must be a positive number, so we choose the inverse link function g_inv() to be exp() so that_ $\lambda_i = e^{X_i'\beta}$. _For example:_
+# ---- Step 0: Load and prepare the data ----
+df = pd.read_csv("blueprinty.csv")
+df["age_sq"] = df["age"] ** 2
+region_dummies = pd.get_dummies(df["region"], drop_first=True)
 
+# Construct the design matrix X
+X = pd.concat([
+    pd.Series(1, index=df.index, name="intercept"),
+    df[["age", "age_sq", "iscustomer"]],
+    region_dummies
+], axis=1)
+y = df["patents"].values
+X_matrix = X.values
+
+# ---- Step 1: Define log-likelihood function with clipping to prevent overflow ----
+def poisson_loglikelihood(beta, Y, X):
+    beta = np.asarray(beta, dtype=np.float64)
+    X = np.asarray(X, dtype=np.float64)
+    xb = np.dot(X, beta)
+    xb = np.clip(xb, -50, 50)  # prevent overflow in exp
+    lam = np.exp(xb)
+    return np.sum(Y * xb - lam - gammaln(Y + 1))
+
+# ---- Step 2: Define negative log-likelihood for minimization ----
+def neg_loglikelihood(beta, Y, X):
+    return -poisson_loglikelihood(beta, Y, X)
+
+# ---- Step 3: Numerical optimization to find MLE ----
+beta_init = np.zeros(X.shape[1])
+result = minimize(neg_loglikelihood, beta_init, args=(y, X_matrix), method="BFGS")
+beta_hat = result.x
+hessian_inv = result.hess_inv
+se_hat = np.sqrt(np.diag(hessian_inv))
+
+# ---- Step 4: Present coefficient table ----
+results_table = pd.DataFrame({
+    "Coefficient": beta_hat.round(4),
+    "Std. Error": se_hat.round(4)
+}, index=X.columns)
+
+results_table
 ```
-poisson_regression_likelihood <- function(beta, Y, X){
-   ...
-}
-```
 
-_todo: Use your function along with R's optim() or Python's sp.optimize() to find the MLE vector and the Hessian of the Poisson model with covariates. Specifically, the first column of X should be all 1's to enable a constant term in the model, and the subsequent columns should be age, age squared, binary variables for all but one of the regions, and the binary customer variable. Use the Hessian to find standard errors of the beta parameter estimates and present a table of coefficients and standard errors._
+| Variable    | Coefficient | Std. Error |
+|-------------|-------------|------------|
+| intercept   | -0.5100     | 0.0591     |
+| age         |  0.1487     | 0.0080     |
+| age_sq      | -0.0030     | 0.0002     |
+| iscustomer  |  0.2076     | 0.0289     |
+| Northeast   |  0.0292     | 0.0540     |
+| Northwest   | -0.0176     | 0.0668     |
+| South       |  0.0566     | 0.0660     |
+| Southwest   |  0.0506     | 0.0597     |
 
-_todo: Check your results using R's glm() function or Python sm.GLM() function._
 
-_todo: Interpret the results._ 
+#### Interpreting the Poisson Regression Results
 
-_todo: What do you conclude about the effect of Blueprinty's software on patent success? Because the beta coefficients are not directly interpretable, it may help to create two fake datasets: X_0 and X_1 where X_0 is the X data but with iscustomer=0 for every observation and X_1 is the X data but with iscustomer=1 for every observation. Then, use X_0 and your fitted model to get the vector of predicted number of patents (y_pred_0) for every firm in the dataset, and use X_1 to get Y_pred_1 for every firm. Then subtract y_pred_1 minus y_pred_0 and take the average of that vector of differences._
+From our estimated Poisson regression model:
 
+- The coefficient on `age` is **0.1487**, indicating that older firms tend to receive more patents.
+- The negative coefficient on `age_sq` (**−0.0030**) suggests diminishing returns to age — patenting increases with age but at a decreasing rate.
+- The coefficient on `iscustomer` is **0.2076**, meaning that being a Blueprinty customer increases the log of expected patent counts by this amount.
 
+To make this more interpretable, we exponentiate the `iscustomer` coefficient:
+
+\
+$\exp(0.2076) \approx 1.23$
+\
+
+This implies that being a customer is associated with approximately a **23% increase in expected patent output**, holding other variables constant.
+
+---
+#### Interpreting the Effect of Blueprinty: Counterfactual Simulation
+
+Because the coefficients are on a log scale, we simulate two counterfactual scenarios:
+
+- **$X_0$**: All firms are treated as non-customers (`iscustomer = 0`)
+- **$X_1$**: All firms are treated as Blueprinty customers (`iscustomer = 1`)
+
+We use our fitted model to compute:
+
+- $\hat{y}_0$ = predicted patents for $X_0$
+- $\hat{y}_1$ = predicted patents for $X_1$
+- Average difference = $\hat{y}_1 - \hat{y}_0$
+
+\
+$\text{Average difference} = 0.79$
+\
+
+This means Blueprinty customers are predicted to earn **0.79 more patents**, on average, than they would have if they weren’t customers.
+
+---
+#### Conclusion
+
+Our analysis suggests that Blueprinty's software has a **positive and meaningful effect** on patent success. While the impact of being a customer translates to fewer than one additional patent over five years, this is a substantial gain in innovation output, especially when aggregated across a large number of firms. These results highlight Blueprinty's potential to support R&D productivity.
 
 
 ## AirBnB Case Study
