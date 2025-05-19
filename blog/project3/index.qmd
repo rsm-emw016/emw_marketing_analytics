@@ -1,645 +1,182 @@
 ---
-title: "Poisson Regression Examples"
-author: "Emma Wu"
+title: "Multinomial Logit Model"
+author: Emma Wu
 date: today
-callout-appearance: minimal # this hides the blue "i" icon on .callout-notes
+format: pdf
 ---
 
 
-## Blueprinty Case Study
-
-### Introduction
-
-Blueprinty is a small firm that makes software for developing blueprints specifically for submitting patent applications to the US patent office. Their marketing team would like to make the claim that patent applicants using Blueprinty's software are more successful in getting their patent applications approved. Ideal data to study such an effect might include the success rate of patent applications before using Blueprinty's software and after using it. Unfortunately, such data is not available. 
-
-However, Blueprinty has collected data on 1,500 mature (non-startup) engineering firms. The data include each firm's number of patents awarded over the last 5 years, regional location, age since incorporation, and whether or not the firm uses Blueprinty's software. The marketing team would like to use this data to make the claim that firms using Blueprinty's software are more successful in getting their patent applications approved.
-
-
-### Data
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-#| output: false
-import pandas as pd
-df = pd.read_csv('blueprinty.csv')
-df.head()
-```
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-df = pd.read_csv('blueprinty.csv')
-means = df.groupby("iscustomer")["patents"].mean().reset_index()
-means.columns = ["Customer Status", "Mean Patents"]
+This assignment expores two methods for estimating the MNL model: (1) via Maximum Likelihood, and (2) via a Bayesian approach using a Metropolis-Hastings MCMC algorithm. 
 
-plt.figure(figsize=(10, 5))
 
-sns.histplot(data=df, x="patents", hue="iscustomer", bins=30,
-             element="step", stat="density", common_norm=False,
-             palette={0: "skyblue", 1: "orange"}, legend=True)
+## 1. Likelihood for the Multi-nomial Logit (MNL) Model
 
-plt.title("Histogram of Patents by Customer Status")
-plt.xlabel("Number of Patents")
-plt.ylabel("Density")
-plt.legend(title="Customer Status", labels=["Non-Customer", "Customer"])
+Suppose we have $i=1,\ldots,n$ consumers who each select exactly one product $j$ from a set of $J$ products. The outcome variable is the identity of the product chosen $y_i \in \{1, \ldots, J\}$ or equivalently a vector of $J-1$ zeros and $1$ one, where the $1$ indicates the selected product. For example, if the third product was chosen out of 3 products, then either $y=3$ or $y=(0,0,1)$ depending on how we want to represent it. Suppose also that we have a vector of data on each product $x_j$ (eg, brand, price, etc.). 
 
-plt.tight_layout()
-plt.show()
-```
+We model the consumer's decision as the selection of the product that provides the most utility, and we'll specify the utility function as a linear function of the product characteristics:
 
-| Customer Status | Mean Patents |
-|------------------|--------------|
-| Non-Customer             | 3.473013     |
-| Customer              | 4.133056     |
+$$ U_{ij} = x_j'\beta + \epsilon_{ij} $$
 
-From the chart and table, we can see that Blueprinty customers tend to have more patents than non-customers. On average, customers have 4.13 patents, while non-customers have 3.47. The histogram shows that customers are more likely to appear in the higher end of the distribution.
+where $\epsilon_{ij}$ is an i.i.d. extreme value error term. 
 
-However, it’s important to remember that customers are not randomly selected. That means we cannot say for sure that being a customer causes someone to have more patents. It’s possible that customers are already different before joining—perhaps they are more experienced, innovative, or come from regions or industries with higher patent activity.
+The choice of the i.i.d. extreme value error term leads to a closed-form expression for the probability that consumer $i$ chooses product $j$:
 
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+$$ \mathbb{P}_i(j) = \frac{e^{x_j'\beta}}{\sum_{k=1}^Je^{x_k'\beta}} $$
 
-df = pd.read_csv("blueprinty.csv") 
+For example, if there are 3 products, the probability that consumer $i$ chooses product 3 is:
 
-mean_age = df.groupby("iscustomer")["age"].mean().reset_index()
-mean_age.columns = ["Customer Status", "Mean Age"]
+$$ \mathbb{P}_i(3) = \frac{e^{x_3'\beta}}{e^{x_1'\beta} + e^{x_2'\beta} + e^{x_3'\beta}} $$
 
-region_counts = pd.crosstab(df["region"], df["iscustomer"])
-region_counts.columns = ["Non-Customer", "Customer"]
-region_props = region_counts.div(region_counts.sum(axis=0), axis=1).round(3) 
+A clever way to write the individual likelihood function for consumer $i$ is the product of the $J$ probabilities, each raised to the power of an indicator variable ($\delta_{ij}$) that indicates the chosen product:
 
-plt.figure(figsize=(10, 4))
-sns.histplot(data=df, x="age", hue="iscustomer", bins=20, palette=["orange", "skyblue"], element="step")
-plt.title("Age Distribution by Customer Status")
-plt.xlabel("Age")
-plt.ylabel("Count")
-plt.legend(title="Customer Status", labels=["Non-Customer", "Customer"])
-plt.tight_layout()
-plt.show()
-```
+$$ L_i(\beta) = \prod_{j=1}^J \mathbb{P}_i(j)^{\delta_{ij}} = \mathbb{P}_i(1)^{\delta_{i1}} \times \ldots \times \mathbb{P}_i(J)^{\delta_{iJ}}$$
 
-| Customer Status | Mean Age |
-|------------------|-----------|
-| Non-Customer (0) | 26.10     |
-| Customer (1)     | 26.90     |
+Notice that if the consumer selected product $j=3$, then $\delta_{i3}=1$ while $\delta_{i1}=\delta_{i2}=0$ and the likelihood is:
 
-Customers tend to be slightly older than non-customers. The age distribution plot shows that customers are more concentrated in the 20–35 age range, while non-customers are more evenly spread out. Although the difference is modest, it suggests that age may play a role in who becomes a customer, and should be considered when comparing outcomes like patent ownership.
+$$ L_i(\beta) = \mathbb{P}_i(1)^0 \times \mathbb{P}_i(2)^0 \times \mathbb{P}_i(3)^1 = \mathbb{P}_i(3) = \frac{e^{x_3'\beta}}{\sum_{k=1}^3e^{x_k'\beta}} $$
 
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+The joint likelihood (across all consumers) is the product of the $n$ individual likelihoods:
 
-df = pd.read_csv("blueprinty.csv") 
+$$ L_n(\beta) = \prod_{i=1}^n L_i(\beta) = \prod_{i=1}^n \prod_{j=1}^J \mathbb{P}_i(j)^{\delta_{ij}} $$
 
-region_counts = pd.crosstab(df["region"], df["iscustomer"])
-region_counts.columns = ["Non-Customer", "Customer"]
-region_props = region_counts.div(region_counts.sum(axis=0), axis=1).round(3) 
+And the joint log-likelihood function is:
 
-region_props.plot(kind="bar", figsize=(10, 5), color=["#fdbf6f", "#a6cee3"])  
-plt.title("Region Distribution by Customer Status")
-plt.xlabel("Region")
-plt.ylabel("Proportion within Group")
-plt.legend(title="Customer Status")
-plt.xticks(rotation=45)
-plt.tight_layout()
-```
+$$ \ell_n(\beta) = \sum_{i=1}^n \sum_{j=1}^J \delta_{ij} \log(\mathbb{P}_i(j)) $$
 
-| Region     | Non-Customer | Customer |
-|------------|---------------|----------|
-| Midwest    | 0.184         | 0.077    |
-| Northeast  | 0.268         | 0.682    |
-| Northwest  | 0.155         | 0.060    |
-| South      | 0.153         | 0.073    |
-| Southwest  | 0.240         | 0.108    |
 
-There are also notable differences in regional distribution. Customers are overwhelmingly concentrated in the Northeast (68%), whereas non-customers are more evenly distributed across regions, especially in the Midwest and Southwest. This uneven geographic pattern indicates that customer status is not random and may be influenced by location-based factors. As with age, region should be taken into account when analyzing differences between customers and non-customers.
 
+## 2. Simulate Conjoint Data
 
-### Estimation of Simple Poisson Model
+We will simulate data from a conjoint experiment about video content streaming services. We elect to simulate 100 respondents, each completing 10 choice tasks, where they choose from three alternatives per task. For simplicity, there is not a "no choice" option; each simulated respondent must select one of the 3 alternatives. 
 
-Since our outcome variable of interest can only be small integer values per a set unit of time, we can use a Poisson density to model the number of patents awarded to each engineering firm over the last 5 years. We start by estimating a simple Poisson model via Maximum Likelihood.
+Each alternative is a hypothetical streaming offer consistent of three attributes: (1) brand is either Netflix, Amazon Prime, or Hulu; (2) ads can either be part of the experience, or it can be ad-free, and (3) price per month ranges from \$4 to \$32 in increments of \$4.
 
-Suppose we observe independent draws $Y_1, Y_2, \dots, Y_n \sim \text{Poisson}(\lambda)$,  
-where the probability mass function of the Poisson distribution is:
+The part-worths (ie, preference weights or beta parameters) for the attribute levels will be 1.0 for Netflix, 0.5 for Amazon Prime (with 0 for Hulu as the reference brand); -0.8 for included adverstisements (0 for ad-free); and -0.1*price so that utility to consumer $i$ for hypothethical streaming service $j$ is 
 
-$f(Y_i \mid \lambda) = \dfrac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}$
+$$
+u_{ij} = (1 \times Netflix_j) + (0.5 \times Prime_j) + (-0.8*Ads_j) - 0.1\times Price_j + \varepsilon_{ij}
+$$
 
-Then, the likelihood function for the full sample is:
+where the variables are binary indicators and $\varepsilon$ is Type 1 Extreme Value (ie, Gumble) distributed.
 
-$\mathcal{L}(\lambda) = \prod_{i=1}^{n} f(Y_i \mid \lambda)
-= \prod_{i=1}^{n} \dfrac{e^{-\lambda} \lambda^{Y_i}}{Y_i!}
-= e^{-n\lambda} \lambda^{\sum_{i=1}^{n} Y_i} \prod_{i=1}^{n} \dfrac{1}{Y_i!}$
-
-Since it's easier to work with, we usually take the logarithm of the likelihood function.  
-This gives us the log-likelihood:
-
-$\log \mathcal{L}(\lambda) = \sum_{i=1}^{n} \left( -\lambda + Y_i \log \lambda - \log(Y_i!) \right)
-= -n\lambda + \left( \sum_{i=1}^{n} Y_i \right) \log \lambda - \sum_{i=1}^{n} \log(Y_i!)$
-
----
-
-To better understand the relationship between λ (lambda) and the observed data, we now walk through a full maximum likelihood estimation process for the Poisson model.
-
-```{python}
-#| code-fold: true
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.optimize import minimize_scalar
-from scipy.special import gammaln
-import pandas as pd
-
-df = pd.read_csv("blueprinty.csv")
-Y = df["patents"].values  
-
-# ---- Step 1: Define log-likelihood function ----
-def poisson_loglikelihood(lam, Y):
-    if lam <= 0:
-        return -np.inf
-    return np.sum(Y * np.log(lam) - lam - gammaln(Y + 1))
-
-# ---- Step 2: Plot lambda vs log-likelihood ----
-lambdas = np.linspace(0.1, 10, 200)
-loglik_values = [poisson_loglikelihood(lam, Y) for lam in lambdas]
-
-plt.figure(figsize=(8, 5))
-plt.plot(lambdas, loglik_values, label="Log-Likelihood")
-plt.axvline(x=np.mean(Y), color='red', linestyle='--', label='MLE (mean of Y)')
-plt.title("Poisson Log-Likelihood vs Lambda")
-plt.xlabel("Lambda")
-plt.ylabel("Log-Likelihood")
-plt.legend()
-plt.show()
-
-# ---- Step 3: Analytical MLE solution ----
-lambda_mle_analytical = np.mean(Y)
-
-# ---- Step 4: Numerical MLE using optimization ----
-neg_loglik = lambda lam: -poisson_loglikelihood(lam, Y)
-opt_result = minimize_scalar(neg_loglik, bounds=(0.01, 20), method='bounded')
-
-lambda_mle_numerical = opt_result.x
-
-# Collect results
-results = {
-    "Analytical MLE (mean of Y)": round(lambda_mle_analytical, 4),
-    "Numerical MLE (optimize)": round(lambda_mle_numerical, 4)
-}
-
-```
-
-The plot above shows how the Poisson log-likelihood changes as we vary $\lambda$, the expected number of patents per firm. The curve reaches its peak at $\lambda = 3.6847$, which is the value that makes the observed data most likely — this is our Maximum Likelihood Estimate (MLE).
-
-The table below confirms that both the analytical solution (sample mean) and the numerical optimization produce exactly the same MLE value. This gives us confidence that our model is correctly specified and our estimation is reliable.
-
-
-| Method                         | MLE Value |
-|--------------------------------|-----------|
-| Analytical MLE (mean of Y)     | 3.6847    |
-| Numerical MLE (optimize)       | 3.6847    |
-
-
-
-### Estimation of Poisson Regression Model
-
-Next, we extend our simple Poisson model to a Poisson Regression Model such that $Y_i = \text{Poisson}(\lambda_i)$ where $\lambda_i = \exp(X_i'\beta)$. The interpretation is that the success rate of patent awards is not constant across all firms ($\lambda$) but rather is a function of firm characteristics $X_i$. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-#| output: false
-import pandas as pd
-import numpy as np
-from scipy.optimize import minimize
-from scipy.special import gammaln
-import statsmodels.api as sm
-
-# ---- Step 0: Load and prepare the data ----
-df = pd.read_csv("blueprinty.csv")
-df["age_sq"] = df["age"] ** 2
-region_dummies = pd.get_dummies(df["region"], drop_first=True)
-
-# Construct the design matrix X
-X = pd.concat([
-    pd.Series(1, index=df.index, name="intercept"),
-    df[["age", "age_sq", "iscustomer"]],
-    region_dummies
-], axis=1)
-y = df["patents"].values
-X_matrix = X.values
-
-# ---- Step 1: Define log-likelihood function with clipping to prevent overflow ----
-def poisson_loglikelihood(beta, Y, X):
-    beta = np.asarray(beta, dtype=np.float64)
-    X = np.asarray(X, dtype=np.float64)
-    xb = np.dot(X, beta)
-    xb = np.clip(xb, -50, 50)  # prevent overflow in exp
-    lam = np.exp(xb)
-    return np.sum(Y * xb - lam - gammaln(Y + 1))
-
-# ---- Step 2: Define negative log-likelihood for minimization ----
-def neg_loglikelihood(beta, Y, X):
-    return -poisson_loglikelihood(beta, Y, X)
-
-# ---- Step 3: Numerical optimization to find MLE ----
-beta_init = np.zeros(X.shape[1])
-result = minimize(neg_loglikelihood, beta_init, args=(y, X_matrix), method="BFGS")
-beta_hat = result.x
-hessian_inv = result.hess_inv
-se_hat = np.sqrt(np.diag(hessian_inv))
-
-# ---- Step 4: Present coefficient table ----
-results_table = pd.DataFrame({
-    "Coefficient": beta_hat.round(4),
-    "Std. Error": se_hat.round(4)
-}, index=X.columns)
-
-results_table
-```
-
-| Variable    | Coefficient | Std. Error |
-|-------------|-------------|------------|
-| intercept   | -0.5100     | 0.0591     |
-| age         |  0.1487     | 0.0080     |
-| age_sq      | -0.0030     | 0.0002     |
-| iscustomer  |  0.2076     | 0.0289     |
-| Northeast   |  0.0292     | 0.0540     |
-| Northwest   | -0.0176     | 0.0668     |
-| South       |  0.0566     | 0.0660     |
-| Southwest   |  0.0506     | 0.0597     |
-
-
-#### Interpreting the Poisson Regression Results
-
-From our estimated Poisson regression model:
-
-- The coefficient on `age` is **0.1487**, indicating that older firms tend to receive more patents.
-- The negative coefficient on `age_sq` (**−0.0030**) suggests diminishing returns to age — patenting increases with age but at a decreasing rate.
-- The coefficient on `iscustomer` is **0.2076**, meaning that being a Blueprinty customer increases the log of expected patent counts by this amount.
-
-To make this more interpretable, we exponentiate the `iscustomer` coefficient:
-
-\
-$\exp(0.2076) \approx 1.23$
-\
-
-This implies that being a customer is associated with approximately a **23% increase in expected patent output**, holding other variables constant.
-
----
-#### Interpreting the Effect of Blueprinty: Counterfactual Simulation
-
-Because the coefficients are on a log scale, we simulate two counterfactual scenarios:
-
-- **$X_0$**: All firms are treated as non-customers (`iscustomer = 0`)
-- **$X_1$**: All firms are treated as Blueprinty customers (`iscustomer = 1`)
-
-We use our fitted model to compute:
-
-- $\hat{y}_0$ = predicted patents for $X_0$
-- $\hat{y}_1$ = predicted patents for $X_1$
-- Average difference = $\hat{y}_1 - \hat{y}_0$
-
-\
-$\text{Average difference} = 0.79$
-\
-
-This means Blueprinty customers are predicted to earn **0.79 more patents**, on average, than they would have if they weren’t customers.
-
----
-#### Conclusion
-
-Our analysis suggests that Blueprinty's software has a **positive and meaningful effect** on patent success. While the impact of being a customer translates to fewer than one additional patent over five years, this is a substantial gain in innovation output, especially when aggregated across a large number of firms. These results highlight Blueprinty's potential to support R&D productivity.
-
-
-## AirBnB Case Study
-
-### Introduction
-
-AirBnB is a popular platform for booking short-term rentals. In March 2017, students Annika Awad, Evan Lebo, and Anna Linden scraped of 40,000 Airbnb listings from New York City.  The data include the following variables:
+The following code provides the simulation of the conjoint data.
 
 :::: {.callout-note collapse="true"}
-### Variable Definitions
+```{r}
+# set seed for reproducibility
+set.seed(123)
 
-    - `id` = unique ID number for each unit
-    - `last_scraped` = date when information scraped
-    - `host_since` = date when host first listed the unit on Airbnb
-    - `days` = `last_scraped` - `host_since` = number of days the unit has been listed
-    - `room_type` = Entire home/apt., Private room, or Shared room
-    - `bathrooms` = number of bathrooms
-    - `bedrooms` = number of bedrooms
-    - `price` = price per night (dollars)
-    - `number_of_reviews` = number of reviews for the unit on Airbnb
-    - `review_scores_cleanliness` = a cleanliness score from reviews (1-10)
-    - `review_scores_location` = a "quality of location" score from reviews (1-10)
-    - `review_scores_value` = a "quality of value" score from reviews (1-10)
-    - `instant_bookable` = "t" if instantly bookable, "f" if not
+# define attributes
+brand <- c("N", "P", "H") # Netflix, Prime, Hulu
+ad <- c("Yes", "No")
+price <- seq(8, 32, by=4)
 
+# generate all possible profiles
+profiles <- expand.grid(
+    brand = brand,
+    ad = ad,
+    price = price
+)
+m <- nrow(profiles)
+
+# assign part-worth utilities (true parameters)
+b_util <- c(N = 1.0, P = 0.5, H = 0)
+a_util <- c(Yes = -0.8, No = 0.0)
+p_util <- function(p) -0.1 * p
+
+# number of respondents, choice tasks, and alternatives per task
+n_peeps <- 100
+n_tasks <- 10
+n_alts <- 3
+
+# function to simulate one respondent’s data
+sim_one <- function(id) {
+  
+    datlist <- list()
+    
+    # loop over choice tasks
+    for (t in 1:n_tasks) {
+        
+        # randomly sample 3 alts (better practice would be to use a design)
+        dat <- cbind(resp=id, task=t, profiles[sample(m, size=n_alts), ])
+        
+        # compute deterministic portion of utility
+        dat$v <- b_util[dat$brand] + a_util[dat$ad] + p_util(dat$price) |> round(10)
+        
+        # add Gumbel noise (Type I extreme value)
+        dat$e <- -log(-log(runif(n_alts)))
+        dat$u <- dat$v + dat$e
+        
+        # identify chosen alternative
+        dat$choice <- as.integer(dat$u == max(dat$u))
+        
+        # store task
+        datlist[[t]] <- dat
+    }
+    
+    # combine all tasks for one respondent
+    do.call(rbind, datlist)
+}
+
+# simulate data for all respondents
+conjoint_data <- do.call(rbind, lapply(1:n_peeps, sim_one))
+
+# remove values unobservable to the researcher
+conjoint_data <- conjoint_data[ , c("resp", "task", "brand", "ad", "price", "choice")]
+
+# clean up
+rm(list=setdiff(ls(), "conjoint_data"))
+```
 ::::
 
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-#| output: false
-import pandas as pd
-df = pd.read_csv('airbnb.csv')
-df.head()
-```
 
 
-### Data Exploration and Cleaning 
-Before modeling, we explore and clean the dataset to ensure that it contains only relevant and usable observations. We also perform some basic exploratory data analysis (EDA) to better understand the distribution and relationships among key variables.
+## 3. Preparing the Data for Estimation
 
-Before we begin analysis or plotting, it's important to understand which variables have missing values and how significant the gaps are.
+The "hard part" of the MNL likelihood function is organizing the data, as we need to keep track of 3 dimensions (consumer $i$, covariate $k$, and product $j$) instead of the typical 2 dimensions for cross-sectional regression models (consumer $i$ and covariate $k$). The fact that each task for each respondent has the same number of alternatives (3) helps.  In addition, we need to convert the categorical variables for brand and ads into binary variables.
 
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-import pandas as pd
-df = pd.read_csv('airbnb.csv')
-
-missing_pct = df.isnull().mean().sort_values(ascending=False) * 100
-
-# Plot missingness
-import matplotlib.pyplot as plt
-
-plt.figure(figsize=(8, 6))
-missing_pct[missing_pct > 0].plot(kind='barh', color='skyblue')
-plt.title("Missing Data by Column")
-plt.xlabel("% missing")
-plt.tight_layout()
-plt.show()
-```
-Approximately 25% of listings are missing values in at least one of the review score fields — including cleanliness, location, or value ratings. In contrast, the rest of the dataset — including key variables such as price, bathrooms, bedrooms, and room_type — is largely complete, with fewer than 1% missing values. This gives us confidence that we can move forward with a clean dataset by removing only rows with missing review scores, while preserving most of the original sample.
-
-To understand the distribution of listing types, we first look at how many units fall into each room category.
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-#| output: false
-import pandas as pd
-df = pd.read_csv('airbnb.csv')
-
-columns_to_keep = [
-    "room_type", "bathrooms", "bedrooms", "price",
-    "number_of_reviews", "review_scores_cleanliness",
-    "review_scores_location", "review_scores_value",
-    "instant_bookable"
-]
-df_clean = df.dropna(subset=columns_to_keep)
-df_clean["room_type"].value_counts()
-```
-
-| Room Type         | Count |
-|-------------------|-------|
-| Entire home/apt   | 15,543 |
-| Private room      | 13,773 |
-| Shared room       | 844    |
-
-We see that most listings are either entire homes or private rooms. Shared rooms are relatively rare in the dataset, making up less than 3% of listings.
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-#| output: false
-import pandas as pd
-df = pd.read_csv('airbnb.csv')
-df.isnull().sum()
-
-columns_to_keep = [
-    "room_type", "bathrooms", "bedrooms", "price",
-    "number_of_reviews", "review_scores_cleanliness",
-    "review_scores_location", "review_scores_value",
-    "instant_bookable"
-]
-
-df_clean = df.dropna(subset=columns_to_keep)
-df_clean.shape
-
-df_clean["price"] = df_clean["price"].replace("[\$,]", "", regex=True).astype(float)
-df_clean["instant_bookable"] = df_clean["instant_bookable"].map({"t": 1, "f": 0})
-room_dummies = pd.get_dummies(df_clean["room_type"], drop_first=True)
-df_clean = pd.concat([df_clean, room_dummies], axis=1)
-room_dummies = pd.get_dummies(df_clean["room_type"], drop_first=True)
-df_clean = pd.concat([df_clean, room_dummies], axis=1)
-df_clean[["price", "bathrooms", "bedrooms", "number_of_reviews"]].describe()
-```
-
-Next, we explore the core numeric variables such as price, bedrooms, and number of reviews. This gives us a sense of the data’s central tendency, spread, and potential outliers.
-
-| Statistic | `price` | `bathrooms` | `bedrooms` | `number_of_reviews` |
-|-----------|---------|-------------|------------|----------------------|
-| Count     | 30160   | 30160       | 30160      | 30160                |
-| Mean      | 140.21  | 1.12        | 1.15       | 21.17                |
-| Std. Dev. | 188.39  | 0.38        | 0.70       | 32.01                |
-| Min       | 10.00   | 0.00        | 0.00       | 1.00                 |
-| 25%       | 70.00   | 1.00        | 1.00       | 3.00                 |
-| 50%       | 103.00  | 1.00        | 1.00       | 8.00                 |
-| 75%       | 169.00  | 1.00        | 1.00       | 26.00                |
-| Max       | 10000.00| 6.00        | 10.00      | 421.00         
-
-The average nightly price for a listing is $140, but prices vary widely, with some as low as $10 and a few as high as $10,000 — indicating potential outliers. Most listings have just one bathroom and bedroom. The average number of reviews is 21.17, but the maximum reaches 421, which suggests a strong right-skew in review counts. This supports the idea that some listings are booked (and reviewed) far more frequently than others.
-
----
-
-We begin by exploring the overall distribution of review counts across listings. Since `number_of_reviews` is our proxy for bookings, it's important to understand how this outcome behaves.
-
-The histogram below shows a highly right-skewed distribution. Most listings receive fewer than 30 reviews, with a large number of listings receiving fewer than 10. A small number of listings stand out with over 200 reviews — these will have a large influence on our model.
-
-::: {.callout-note title="Why This Matters"}
-The skewed distribution confirms that a Poisson model — which is well-suited for modeling count data — is appropriate for this task.
-:::
-
-We visualize the overall distribution of review counts to further confirm its skewness. This outcome variable will serve as our target in the Poisson regression.
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
-df = pd.read_csv('airbnb.csv')
-
-columns_to_keep = [
-    "room_type", "bathrooms", "bedrooms", "price",
-    "number_of_reviews", "review_scores_cleanliness",
-    "review_scores_location", "review_scores_value",
-    "instant_bookable"
-]
-df_clean = df.dropna(subset=columns_to_keep)
-sns.histplot(df_clean["number_of_reviews"], bins=50)
-plt.title("Distribution of Number of Reviews")
-plt.xlabel("Number of Reviews")
-plt.ylabel("Count")
-plt.show()
-```
-We now compare review activity across different room types to see if guests prefer specific listing categories. The boxplot shows how the number of reviews differs by room type. Private rooms and entire homes/apartments tend to have a wider spread of review counts, with many listings receiving over 100 reviews. Shared rooms receive fewer reviews on average. This suggests that travelers may prefer private or full-space options, and that those listings are likely booked more often.
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
-df = pd.read_csv('airbnb.csv')
-
-columns_to_keep = [
-    "room_type", "bathrooms", "bedrooms", "price",
-    "number_of_reviews", "review_scores_cleanliness",
-    "review_scores_location", "review_scores_value",
-    "instant_bookable"
-]
-
-df_clean = df.dropna(subset=columns_to_keep)
-sns.boxplot(x="room_type", y="number_of_reviews", data=df_clean)
-plt.title("Number of Reviews by Room Type")
-plt.show()
-```
-To explore whether price affects popularity, we examine the relationship between listing price and number of reviews. The scatterplot shows a weak inverse relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
-df = pd.read_csv('airbnb.csv')
-
-columns_to_keep = [
-    "room_type", "bathrooms", "bedrooms", "price",
-    "number_of_reviews", "review_scores_cleanliness",
-    "review_scores_location", "review_scores_value",
-    "instant_bookable"
-]
-df_clean = df.dropna(subset=columns_to_keep)
-
-sns.scatterplot(x="price", y="number_of_reviews", data=df_clean)
-plt.xlim(0, 500)  # Remove extreme outliers
-plt.title("Price vs Number of Reviews")
-plt.show()
-```
-
-Finally, we look at how numeric variables relate to one another. This helps identify strong pairwise relationships and avoid multicollinearity in modeling.
-
-Key observations:
-
-- `review_scores_cleanliness` and `review_scores_value` have a relatively strong positive correlation (~0.62).
-- `price` and `number_of_reviews` are almost uncorrelated (~−0.002), which supports what we observed visually.
-- Cleanliness and location scores tend to correlate moderately with other review-based features.
-
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-import seaborn as sns
-import matplotlib.pyplot as plt
-import pandas as pd
-df = pd.read_csv('airbnb.csv')
-
-columns_to_keep = [
-    "room_type", "bathrooms", "bedrooms", "price",
-    "number_of_reviews", "review_scores_cleanliness",
-    "review_scores_location", "review_scores_value",
-    "instant_bookable"
-]
-df_clean = df.dropna(subset=columns_to_keep)
-sns.heatmap(df_clean[[
-    "price", "number_of_reviews", "review_scores_cleanliness",
-    "review_scores_location", "review_scores_value"
-]].corr(), annot=True, cmap="coolwarm")
-plt.title("Correlation Heatmap")
-plt.show()
-```
-From these exploratory insights, we observe several patterns worth testing formally. In the next section, we fit a Poisson regression model to quantify which features are most associated with review count.
-
-### Modeling: Poisson Regression
-We now build a Poisson regression model to understand what factors are associated with higher booking activity on Airbnb, using `number_of_reviews` as a proxy for the number of bookings.
-
-```{python}
-#| code-fold: true
-#| code-summary: "Code"
-#| output: false
-import statsmodels.api as sm
-import pandas as pd
-
-# Load and clean dataset
-df = pd.read_csv("airbnb.csv")
-columns_to_keep = [
-    "room_type", "bathrooms", "bedrooms", "price",
-    "number_of_reviews", "review_scores_cleanliness",
-    "review_scores_location", "review_scores_value",
-    "instant_bookable"
-]
-df_clean = df.dropna(subset=columns_to_keep)
-df_clean["price"] = df_clean["price"].replace("[\$,]", "", regex=True).astype(float)
-df_clean["instant_bookable"] = df_clean["instant_bookable"].map({"t": 1, "f": 0})
-room_dummies = pd.get_dummies(df_clean["room_type"], drop_first=True)
-df_clean = pd.concat([df_clean, room_dummies], axis=1)
-
-# Define X and y
-X_model = df_clean[[
-    "price", "review_scores_cleanliness", "review_scores_location",
-    "review_scores_value", "instant_bookable", "Private room", "Shared room"
-]]
-X_model = sm.add_constant(X_model).astype(float)
-y_model = df_clean["number_of_reviews"]
-
-# Fit Poisson regression
-poisson_model = sm.GLM(y_model, X_model, family=sm.families.Poisson()).fit()
-poisson_model.summary()
-```
-
-The table below summarizes the estimated coefficients and their interpretation. Coefficients are in log scale, so we exponentiate them to interpret as % change in expected review count.
-
-| Variable                | Coefficient | Std. Error | p-value | Interpretation                                 |
-|-------------------------|-------------|-------------|---------|------------------------------------------------|
-| Intercept               | 3.5554      | 0.015       | 0.000   | Baseline log review count                     |
-| Price                  | −0.0000022  | 0.0000075   | 0.769   | No significant effect                         |
-| Cleanliness Score       | 0.1135      | 0.001       | 0.000   | Higher cleanliness → more reviews             |
-| Location Score          | −0.0794     | 0.002       | 0.000   | Slightly lower reviews with higher location   |
-| Value Score             | −0.0921     | 0.002       | 0.000   | Slightly lower reviews with higher value      |
-| Instant Bookable        | 0.3331      | 0.003       | 0.000   | +40% more reviews if instantly bookable       |
-| Private Room            | −0.0319     | 0.003       | 0.000   | ~3% fewer reviews than Entire home/apt        |
-| Shared Room             | −0.2719     | 0.009       | 0.000   | ~24% fewer reviews than Entire home/apt       |
-
-
-- The `price` variable does not have a statistically significant effect on the number of reviews.
-- Review scores for cleanliness have a positive effect, while scores for location and value have slightly negative effects.
-- Listings that are instantly bookable tend to get around 40% more reviews, which suggests higher guest interest or ease of booking.
-- Compared to entire homes/apartments (the reference room type), private rooms and especially shared rooms tend to receive fewer reviews, suggesting guests may prefer more private accommodations.
+_todo: reshape and prep the data_
 
 
 
-### Result and Conclusion 
+## 4. Estimation via Maximum Likelihood
 
-After cleaning the dataset and conducting exploratory analysis, we used a Poisson regression model to identify which features are most associated with booking activity, as measured by the number of reviews. The model helps us understand how listing characteristics relate to the volume of guest interest and interaction.
+_todo: Code up the log-likelihood function._
 
-Based on the regression output, we observed several important insights:
-
-- Cleanliness score: Each one-point increase in cleanliness is associated with approximately 12% more reviews, highlighting the importance of guest perception of hygiene.
-- Instant bookability: Listings that are instantly bookable tend to receive around 40% more reviews — likely due to convenience and ease of booking.
-- Room type:
-  - Private rooms receive 3% fewer reviews than entire homes/apartments (the baseline).
-  - Shared rooms receive 24% fewer reviews, suggesting a clear guest preference for more privacy.
-- Price: Surprisingly, price does not have a statistically significant effect on review count in this dataset.
-- Location and value scores: Both showed statistically significant but slightly negative effects on reviews — possibly due to nonlinear relationships or correlation with other variables.
+_todo: Use `optim()` in R or `scipy.optimize()` in Python to find the MLEs for the 4 parameters ($\beta_\text{netflix}$, $\beta_\text{prime}$, $\beta_\text{ads}$, $\beta_\text{price}$), as well as their standard errors (from the Hessian). For each parameter construct a 95% confidence interval._
 
 
-These results suggest that Airbnb hosts aiming to increase booking activity should focus on the features that matter most to guests:
 
-- Enable **instant booking**,
-- Improve **cleanliness standards**
-- Offer **more private spaces**.
+## 5. Estimation via Bayesian Methods
 
-Adjusting the listing price may be less effective on its own, especially if other core features do not meet guest expectations. These findings align with common user behavior — convenience, comfort, and perceived quality often drive engagement more than price alone.
+_todo: code up a metropolis-hasting MCMC sampler of the posterior distribution. Take 11,000 steps and throw away the first 1,000, retaining the subsequent 10,000._
+
+_hint: Use N(0,5) priors for the betas on the binary variables, and a N(0,1) prior for the price beta._
+
+_hint: instead of calculating post=lik*prior, you can work in the log-space and calculate log-post = log-lik + log-prior (this should enable you to re-use your log-likelihood function from the MLE section just above)_
+
+_hint: King Markov (in the video) use a candidate distribution of a coin flip to decide whether to move left or right among his islands.  Unlike King Markov, we have 4 dimensions (because we have 4 betas) and our dimensions are continuous.  So, use a multivariate normal distribution to pospose the next location for the algorithm to move to. I recommend a MNV(mu, Sigma) where mu=c(0,0,0,0) and sigma has diagonal values c(0.05, 0.05, 0.05, 0.005) and zeros on the off-diagonal.  Since this MVN has no covariances, you can sample each dimension independently (so 4 univariate normals instead of 1 multivariate normal), where the first 3 univariate normals are N(0,0.05) and the last one if N(0,0.005)._
+
+
+_todo: for at least one of the 4 parameters, show the trace plot of the algorithm, as well as the histogram of the posterior distribution._
+
+_todo: report the 4 posterior means, standard deviations, and 95% credible intervals and compare them to your results from the Maximum Likelihood approach._
+
+
+
+## 6. Discussion
+
+_todo: Suppose you did not simulate the data. What do you observe about the parameter estimates? What does $\beta_\text{Netflix} > \beta_\text{Prime}$ mean? Does it make sense that $\beta_\text{price}$ is negative?_
+
+_todo: At a high level, discuss what change you would need to make in order to simulate data from --- and estimate the parameters of --- a multi-level (aka random-parameter or hierarchical) model. This is the model we use to analyze "real world" conjoint data._
+
+
+
+
+
+
+
+
+
+
 
