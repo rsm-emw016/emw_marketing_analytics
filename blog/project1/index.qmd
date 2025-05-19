@@ -29,7 +29,7 @@ This project seeks to replicate their results.
 #| code-fold: true
 #| code-summary: "Code"
 import pandas as pd
-df = pd.read_stata('/Users/bibibingya/Downloads/emw_marketing_analytics/blog/project2/karlan_list_2007.dta')
+df = pd.read_stata('karlan_list_2007.dta')
 variables_to_test = ['mrm2', 'years', 'freq', 'female']
 ```
 
@@ -123,7 +123,7 @@ import pandas as pd
 import numpy as np
 import statsmodels.api as sm
 from scipy import stats
-df = pd.read_stata('/Users/bibibingya/Downloads/emw_marketing_analytics/blog/project2/karlan_list_2007.dta')
+df = pd.read_stata('karlan_list_2007.dta')
 variables_to_test = ['mrm2', 'years', 'freq', 'female']
 
 results = []
@@ -315,7 +315,7 @@ import pandas as pd
 from scipy.stats import ttest_1samp
 
 # Load and filter to treatment group
-df = pd.read_stata('/Users/bibibingya/Downloads/emw_marketing_analytics/blog/project2/karlan_list_2007.dta')
+df = pd.read_stata('karlan_list_2007.dta')
 treatment_only = df[df['treatment'] == 1].copy()
 
 # Create table to summarize each match ratio group
@@ -467,7 +467,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-df = pd.read_stata('/Users/bibibingya/Downloads/emw_marketing_analytics/blog/project2/karlan_list_2007.dta')
+df = pd.read_stata('karlan_list_2007.dta')
 
 donated_df = df[df['gave'] == 1]
 

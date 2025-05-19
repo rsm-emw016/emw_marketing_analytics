@@ -147,7 +147,6 @@ This gives us the log-likelihood:
 $\log \mathcal{L}(\lambda) = \sum_{i=1}^{n} \left( -\lambda + Y_i \log \lambda - \log(Y_i!) \right)
 = -n\lambda + \left( \sum_{i=1}^{n} Y_i \right) \log \lambda - \sum_{i=1}^{n} \log(Y_i!)$
 
----
 
 To better understand the relationship between λ (lambda) and the observed data, we now walk through a full maximum likelihood estimation process for the Poisson model.
 
@@ -295,13 +294,13 @@ $\exp(0.2076) \approx 1.23$
 
 This implies that being a customer is associated with approximately a **23% increase in expected patent output**, holding other variables constant.
 
----
+
 #### Interpreting the Effect of Blueprinty: Counterfactual Simulation
 
 Because the coefficients are on a log scale, we simulate two counterfactual scenarios:
 
-- **$X_0$**: All firms are treated as non-customers (`iscustomer = 0`)
-- **$X_1$**: All firms are treated as Blueprinty customers (`iscustomer = 1`)
+- $X_0$: All firms are treated as non-customers (`iscustomer = 0`)
+- $X_1$: All firms are treated as Blueprinty customers (`iscustomer = 1`)
 
 We use our fitted model to compute:
 
@@ -309,13 +308,13 @@ We use our fitted model to compute:
 - $\hat{y}_1$ = predicted patents for $X_1$
 - Average difference = $\hat{y}_1 - \hat{y}_0$
 
-\
-$\text{Average difference} = 0.79$
-\
+$$
+\text{Average difference} = 0.79
+$$
 
-This means Blueprinty customers are predicted to earn **0.79 more patents**, on average, than they would have if they weren’t customers.
+This means Blueprinty customers are predicted to earn 0.79 more patents, on average, than they would have if they weren’t customers.
 
----
+
 #### Conclusion
 
 Our analysis suggests that Blueprinty's software has a **positive and meaningful effect** on patent success. While the impact of being a customer translates to fewer than one additional patent over five years, this is a substantial gain in innovation output, especially when aggregated across a large number of firms. These results highlight Blueprinty's potential to support R&D productivity.
@@ -354,7 +353,6 @@ import pandas as pd
 df = pd.read_csv('airbnb.csv')
 df.head()
 ```
-
 
 ### Data Exploration and Cleaning 
 Before modeling, we explore and clean the dataset to ensure that it contains only relevant and usable observations. We also perform some basic exploratory data analysis (EDA) to better understand the distribution and relationships among key variables.
