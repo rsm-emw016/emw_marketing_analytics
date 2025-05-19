@@ -24,7 +24,7 @@
         "\n",
         "### Data\n"
       ],
-      "id": "8f308995"
+      "id": "b1cf701c"
     },
     {
       "cell_type": "code",
@@ -37,7 +37,7 @@
         "df = pd.read_csv('blueprinty.csv')\n",
         "df.head()"
       ],
-      "id": "afab83bc",
+      "id": "3a131c88",
       "execution_count": null,
       "outputs": []
     },
@@ -68,7 +68,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "8e30ae29",
+      "id": "67432b4e",
       "execution_count": null,
       "outputs": []
     },
@@ -85,7 +85,7 @@
         "\n",
         "However, it’s important to remember that customers are not randomly selected. That means we cannot say for sure that being a customer causes someone to have more patents. It’s possible that customers are already different before joining—perhaps they are more experienced, innovative, or come from regions or industries with higher patent activity.\n"
       ],
-      "id": "5d5a1970"
+      "id": "92aae2a3"
     },
     {
       "cell_type": "code",
@@ -115,7 +115,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "e556bd04",
+      "id": "44f3ac36",
       "execution_count": null,
       "outputs": []
     },
@@ -130,7 +130,7 @@
         "\n",
         "Customers tend to be slightly older than non-customers. The age distribution plot shows that customers are more concentrated in the 20–35 age range, while non-customers are more evenly spread out. Although the difference is modest, it suggests that age may play a role in who becomes a customer, and should be considered when comparing outcomes like patent ownership.\n"
       ],
-      "id": "4d9fb4de"
+      "id": "1a5cedff"
     },
     {
       "cell_type": "code",
@@ -156,7 +156,7 @@
         "plt.xticks(rotation=45)\n",
         "plt.tight_layout()"
       ],
-      "id": "70ae371e",
+      "id": "509ba71b",
       "execution_count": null,
       "outputs": []
     },
@@ -200,7 +200,7 @@
         "\n",
         "To better understand the relationship between λ (lambda) and the observed data, we now walk through a full maximum likelihood estimation process for the Poisson model.\n"
       ],
-      "id": "84f190f0"
+      "id": "a2fbedd8"
     },
     {
       "cell_type": "code",
@@ -250,7 +250,7 @@
         "    \"Numerical MLE (optimize)\": round(lambda_mle_numerical, 4)\n",
         "}"
       ],
-      "id": "d142c75a",
+      "id": "00525d5c",
       "execution_count": null,
       "outputs": []
     },
@@ -274,7 +274,7 @@
         "\n",
         "Next, we extend our simple Poisson model to a Poisson Regression Model such that $Y_i = \\text{Poisson}(\\lambda_i)$ where $\\lambda_i = \\exp(X_i'\\beta)$. The interpretation is that the success rate of patent awards is not constant across all firms ($\\lambda$) but rather is a function of firm characteristics $X_i$. Specifically, we will use the covariates age, age squared, region, and whether the firm is a customer of Blueprinty.\n"
       ],
-      "id": "a27b3ca6"
+      "id": "7fdc831f"
     },
     {
       "cell_type": "code",
@@ -331,7 +331,7 @@
         "\n",
         "results_table"
       ],
-      "id": "b302462d",
+      "id": "60951ebc",
       "execution_count": null,
       "outputs": []
     },
@@ -370,7 +370,7 @@
         "\n",
         "---"
       ],
-      "id": "63efba3f"
+      "id": "d398c17c"
     },
     {
       "cell_type": "markdown",
@@ -427,7 +427,7 @@
         "\n",
         "::::\n"
       ],
-      "id": "4f494e40"
+      "id": "4fbf6dbb"
     },
     {
       "cell_type": "code",
@@ -440,7 +440,7 @@
         "df = pd.read_csv('airbnb.csv')\n",
         "df.head()"
       ],
-      "id": "f58d5973",
+      "id": "697b9c9c",
       "execution_count": null,
       "outputs": []
     },
@@ -453,7 +453,7 @@
         "\n",
         "Before we begin analysis or plotting, it's important to understand which variables have missing values and how significant the gaps are.\n"
       ],
-      "id": "3bd76e23"
+      "id": "c38beffa"
     },
     {
       "cell_type": "code",
@@ -476,7 +476,7 @@
         "plt.tight_layout()\n",
         "plt.show()"
       ],
-      "id": "fc0dce28",
+      "id": "c4f3d702",
       "execution_count": null,
       "outputs": []
     },
@@ -488,7 +488,7 @@
         "\n",
         "To understand the distribution of listing types, we first look at how many units fall into each room category.\n"
       ],
-      "id": "ad7d0f5f"
+      "id": "619628af"
     },
     {
       "cell_type": "code",
@@ -509,7 +509,7 @@
         "df_clean = df.dropna(subset=columns_to_keep)\n",
         "df_clean[\"room_type\"].value_counts()"
       ],
-      "id": "748a4f72",
+      "id": "0f3d2be3",
       "execution_count": null,
       "outputs": []
     },
@@ -525,7 +525,7 @@
         "\n",
         "We see that most listings are either entire homes or private rooms. Shared rooms are relatively rare in the dataset, making up less than 3% of listings.\n"
       ],
-      "id": "b1b5cb1d"
+      "id": "94da741a"
     },
     {
       "cell_type": "code",
@@ -556,7 +556,7 @@
         "df_clean = pd.concat([df_clean, room_dummies], axis=1)\n",
         "df_clean[[\"price\", \"bathrooms\", \"bedrooms\", \"number_of_reviews\"]].describe()"
       ],
-      "id": "f028bf62",
+      "id": "9920d848",
       "execution_count": null,
       "outputs": []
     },
@@ -591,7 +591,7 @@
         "\n",
         "We visualize the overall distribution of review counts to further confirm its skewness. This outcome variable will serve as our target in the Poisson regression.\n"
       ],
-      "id": "23891dd9"
+      "id": "b4c8fc8b"
     },
     {
       "cell_type": "code",
@@ -617,7 +617,7 @@
         "plt.ylabel(\"Count\")\n",
         "plt.show()"
       ],
-      "id": "4691d756",
+      "id": "4b0119c3",
       "execution_count": null,
       "outputs": []
     },
@@ -627,7 +627,7 @@
       "source": [
         "We now compare review activity across different room types to see if guests prefer specific listing categories. The boxplot shows how the number of reviews differs by room type. Private rooms and entire homes/apartments tend to have a wider spread of review counts, with many listings receiving over 100 reviews. Shared rooms receive fewer reviews on average. This suggests that travelers may prefer private or full-space options, and that those listings are likely booked more often.\n"
       ],
-      "id": "802bbbc4"
+      "id": "feb2f5ff"
     },
     {
       "cell_type": "code",
@@ -652,7 +652,7 @@
         "plt.title(\"Number of Reviews by Room Type\")\n",
         "plt.show()"
       ],
-      "id": "ed997c23",
+      "id": "99ce38f1",
       "execution_count": null,
       "outputs": []
     },
@@ -662,7 +662,7 @@
       "source": [
         "To explore whether price affects popularity, we examine the relationship between listing price and number of reviews. The scatterplot shows a weak inverse relationship between listing price and number of reviews. Overall, we see that lower-priced listings tend to have more reviews, while higher-priced listings receive fewer. This inverse relationship is intuitive — cheaper listings are more accessible to a wider range of guests, potentially leading to higher booking and review rates. However, there is still significant variability, especially among listings priced under $200.\n"
       ],
-      "id": "b81a5df2"
+      "id": "061b0c48"
     },
     {
       "cell_type": "code",
@@ -688,7 +688,7 @@
         "plt.title(\"Price vs Number of Reviews\")\n",
         "plt.show()"
       ],
-      "id": "a8e8c654",
+      "id": "87b700da",
       "execution_count": null,
       "outputs": []
     },
@@ -704,7 +704,7 @@
         "- `price` and `number_of_reviews` are almost uncorrelated (~−0.002), which supports what we observed visually.\n",
         "- Cleanliness and location scores tend to correlate moderately with other review-based features.\n"
       ],
-      "id": "a7f39387"
+      "id": "a636292e"
     },
     {
       "cell_type": "code",
@@ -731,7 +731,7 @@
         "plt.title(\"Correlation Heatmap\")\n",
         "plt.show()"
       ],
-      "id": "f9a8f5ad",
+      "id": "5c60042f",
       "execution_count": null,
       "outputs": []
     },
@@ -744,7 +744,7 @@
         "### Modeling: Poisson Regression\n",
         "We now build a Poisson regression model to understand what factors are associated with higher booking activity on Airbnb, using `number_of_reviews` as a proxy for the number of bookings.\n"
       ],
-      "id": "cc136331"
+      "id": "d6ac70ec"
     },
     {
       "cell_type": "code",
@@ -782,7 +782,7 @@
         "poisson_model = sm.GLM(y_model, X_model, family=sm.families.Poisson()).fit()\n",
         "poisson_model.summary()"
       ],
-      "id": "267ee0d5",
+      "id": "bd3c1fb0",
       "execution_count": null,
       "outputs": []
     },
@@ -834,7 +834,7 @@
         "\n",
         "Adjusting the listing price may be less effective on its own, especially if other core features do not meet guest expectations. These findings align with common user behavior — convenience, comfort, and perceived quality often drive engagement more than price alone.\n"
       ],
-      "id": "1ad77c84"
+      "id": "11594ded"
     }
   ],
   "metadata": {

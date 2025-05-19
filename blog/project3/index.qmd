@@ -1,6 +1,6 @@
 ---
 title: "Multinomial Logit Model"
-author: Emma Wu
+author: "Your Name"
 date: today
 format: pdf
 ---
