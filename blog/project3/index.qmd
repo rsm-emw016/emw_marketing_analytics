@@ -572,10 +572,8 @@ We now build a Poisson regression model to understand what factors are associate
 import statsmodels.api as sm
 import pandas as pd
 
-# Load dataset
+# Load and clean dataset
 df = pd.read_csv("airbnb.csv")
-
-# Drop missing values
 columns_to_keep = [
     "room_type", "bathrooms", "bedrooms", "price",
     "number_of_reviews", "review_scores_cleanliness",
@@ -583,29 +581,20 @@ columns_to_keep = [
     "instant_bookable"
 ]
 df_clean = df.dropna(subset=columns_to_keep)
-
-# Clean and transform variables
 df_clean["price"] = df_clean["price"].replace("[\$,]", "", regex=True).astype(float)
 df_clean["instant_bookable"] = df_clean["instant_bookable"].map({"t": 1, "f": 0})
-
-# Create dummy variables for room_type
 room_dummies = pd.get_dummies(df_clean["room_type"], drop_first=True)
 df_clean = pd.concat([df_clean, room_dummies], axis=1)
 
-# Define predictors and outcome
+# Define X and y
 X_model = df_clean[[
-    "price",
-    "review_scores_cleanliness",
-    "review_scores_location",
-    "review_scores_value",
-    "instant_bookable",
-    "Private room",
-    "Shared room"
+    "price", "review_scores_cleanliness", "review_scores_location",
+    "review_scores_value", "instant_bookable", "Private room", "Shared room"
 ]]
 X_model = sm.add_constant(X_model).astype(float)
 y_model = df_clean["number_of_reviews"]
 
-# Fit the Poisson regression model
+# Fit Poisson regression
 poisson_model = sm.GLM(y_model, X_model, family=sm.families.Poisson()).fit()
 poisson_model.summary()
 ```
