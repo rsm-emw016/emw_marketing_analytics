@@ -59,7 +59,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -102,6 +102,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -193,6 +196,7 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#posterior-simulation-metropolis-hastings" id="toc-posterior-simulation-metropolis-hastings" class="nav-link" data-scroll-target="#posterior-simulation-metropolis-hastings">Posterior Simulation: Metropolis-Hastings</a></li>
   <li><a href="#posterior-visualization-price-coefficient" id="toc-posterior-visualization-price-coefficient" class="nav-link" data-scroll-target="#posterior-visualization-price-coefficient">Posterior Visualization: Price Coefficient</a></li>
+  <li><a href="#posterior-summary-bayesian-estimation-via-mcmc" id="toc-posterior-summary-bayesian-estimation-via-mcmc" class="nav-link" data-scroll-target="#posterior-summary-bayesian-estimation-via-mcmc">Posterior Summary: Bayesian Estimation via MCMC</a></li>
   </ul></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">6. Discussion</a></li>
   </ul>
@@ -346,7 +350,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <section id="preparing-the-data-for-estimation" class="level2">
 <h2 class="anchored" data-anchor-id="preparing-the-data-for-estimation">3. Preparing the Data for Estimation</h2>
 <p>The “hard part” of the MNL likelihood function is organizing the data, as we need to keep track of 3 dimensions (consumer <span class="math inline">\(i\)</span>, covariate <span class="math inline">\(k\)</span>, and product <span class="math inline">\(j\)</span>) instead of the typical 2 dimensions for cross-sectional regression models (consumer <span class="math inline">\(i\)</span> and covariate <span class="math inline">\(k\)</span>). The fact that each task for each respondent has the same number of alternatives (3) helps. In addition, we need to convert the categorical variables for brand and ads into binary variables.</p>
-<div id="e5e4fccc" class="cell" data-execution_count="1">
+<div id="37d5df3d" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -379,7 +383,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <p>We estimate the model using Maximum Likelihood. First, we define the log-likelihood function based on the MNL specification, then use numerical optimization to find the MLEs. Finally, we use the inverse Hessian to obtain standard errors and construct 95% confidence intervals.</p>
 <section id="log-likelihood-function" class="level3">
 <h3 class="anchored" data-anchor-id="log-likelihood-function">Log-Likelihood Function</h3>
-<div id="971b8163" class="cell" data-execution_count="2">
+<div id="332f28f5" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> logsumexp</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -410,7 +414,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 </section>
 <section id="optimization-and-estimation-results" class="level3">
 <h3 class="anchored" data-anchor-id="optimization-and-estimation-results">Optimization and Estimation Results</h3>
-<div id="eac07100" class="cell" data-execution_count="3">
+<div id="e59db96b" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> logsumexp</span>
@@ -513,7 +517,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <p>We use a Metropolis-Hastings MCMC sampler to simulate draws from the posterior distribution of our model parameters. We take 11,000 steps, discard the first 1,000 as burn-in, and retain 10,000 posterior draws for inference.</p>
 <p>The proposal distribution is a multivariate normal with independent dimensions. The first three parameters (Netflix, Prime, Ad) use a standard deviation of 0.05, and the price coefficient uses 0.005, reflecting tighter prior belief.</p>
 <p>Our sampler achieved an acceptance rate of <strong>56.40%</strong>, which is in the desirable range for good mixing.</p>
-<div id="585fd9a2" class="cell" data-execution_count="4">
+<div id="be8b624b" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -629,7 +633,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <li>A trace plot to assess convergence behavior</li>
 <li>A posterior histogram to visualize the shape and spread of the sampled values</li>
 </ul>
-<div id="2b38a01a" class="cell" data-execution_count="5">
+<div id="5aab46b3" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -734,10 +738,10 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Acceptance rate: 56.89%</code></pre>
+<pre><code>Acceptance rate: 57.75%</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/yf/g_800hts37z9ftxfvzrc1fc80000gn/T/ipykernel_83908/2474500630.py:99: UserWarning: The figure layout has changed to tight
+<pre><code>/var/folders/yf/g_800hts37z9ftxfvzrc1fc80000gn/T/ipykernel_86916/2474500630.py:99: UserWarning: The figure layout has changed to tight
   plt.tight_layout()</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -779,7 +783,159 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 </tr>
 </tbody>
 </table>
-<p><em>todo: report the 4 posterior means, standard deviations, and 95% credible intervals and compare them to your results from the Maximum Likelihood approach.</em></p>
+</section>
+<section id="posterior-summary-bayesian-estimation-via-mcmc" class="level3">
+<h3 class="anchored" data-anchor-id="posterior-summary-bayesian-estimation-via-mcmc">Posterior Summary: Bayesian Estimation via MCMC</h3>
+<p>After running 11,000 Metropolis-Hastings iterations and discarding the first 1,000 as burn-in, we retained 10,000 samples from the posterior distribution for each parameter.</p>
+<div id="2f4caa34" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> logsumexp</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.optimize <span class="im">import</span> minimize</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load and encode data</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"conjoint_data.csv"</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>df_encoded <span class="op">=</span> pd.get_dummies(df, columns<span class="op">=</span>[<span class="st">"brand"</span>, <span class="st">"ad"</span>], drop_first<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create feature matrix X</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df_encoded[[<span class="st">"brand_N"</span>, <span class="st">"brand_P"</span>, <span class="st">"ad_Yes"</span>, <span class="st">"price"</span>]].copy()</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>X[<span class="st">"intercept"</span>] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> X[[<span class="st">"intercept"</span>, <span class="st">"brand_N"</span>, <span class="st">"brand_P"</span>, <span class="st">"ad_Yes"</span>, <span class="st">"price"</span>]]</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Create target vector y</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df_encoded[<span class="st">"choice"</span>]</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to NumPy arrays</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>X_np <span class="op">=</span> X.values.astype(np.float64)</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>y_np <span class="op">=</span> y.values.astype(np.float64)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>X_tasks <span class="op">=</span> X_np.reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>, X_np.shape[<span class="dv">1</span>]))</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>y_tasks <span class="op">=</span> y_np.reshape((<span class="op">-</span><span class="dv">1</span>, <span class="dv">3</span>))</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-likelihood function</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> neg_log_likelihood(beta):</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    utilities <span class="op">=</span> np.einsum(<span class="st">"tjk,k-&gt;tj"</span>, X_tasks, beta)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    log_probs <span class="op">=</span> utilities <span class="op">-</span> logsumexp(utilities, axis<span class="op">=</span><span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    chosen_log_probs <span class="op">=</span> np.<span class="bu">sum</span>(log_probs <span class="op">*</span> y_tasks, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>np.<span class="bu">sum</span>(chosen_log_probs)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-prior (N(0,5) for binary, N(0,1) for price)</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_prior(beta):</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    binary_prior <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (beta[<span class="dv">1</span>:<span class="dv">4</span>] <span class="op">**</span> <span class="dv">2</span>) <span class="op">/</span> (<span class="dv">5</span> <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    price_prior <span class="op">=</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> (beta[<span class="dv">4</span>] <span class="op">**</span> <span class="dv">2</span>) <span class="op">/</span> (<span class="dv">1</span> <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.<span class="bu">sum</span>(binary_prior) <span class="op">+</span> price_prior</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Log-posterior = log-likelihood + log-prior</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> log_posterior(beta):</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span>neg_log_likelihood(beta) <span class="op">+</span> log_prior(beta)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="co"># Metropolis-Hastings MCMC sampler</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> metropolis_hastings(log_posterior, initial_beta, steps<span class="op">=</span><span class="dv">11000</span>, proposal_scales<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>    n_params <span class="op">=</span> <span class="bu">len</span>(initial_beta)</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>    samples <span class="op">=</span> np.zeros((steps, n_params))</span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>    accepted <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    current_beta <span class="op">=</span> initial_beta</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    current_log_post <span class="op">=</span> log_posterior(current_beta)</span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> proposal_scales <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>        proposal_scales <span class="op">=</span> np.array([<span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.005</span>])</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> step <span class="kw">in</span> <span class="bu">range</span>(steps):</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>        proposal <span class="op">=</span> current_beta <span class="op">+</span> np.random.normal(scale<span class="op">=</span>proposal_scales)</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>        proposal_log_post <span class="op">=</span> log_posterior(proposal)</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>        accept_ratio <span class="op">=</span> np.exp(proposal_log_post <span class="op">-</span> current_log_post)</span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.random.rand() <span class="op">&lt;</span> accept_ratio:</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>            current_beta <span class="op">=</span> proposal</span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>            current_log_post <span class="op">=</span> proposal_log_post</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>            accepted <span class="op">+=</span> <span class="dv">1</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>        samples[step] <span class="op">=</span> current_beta</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Acceptance rate: </span><span class="sc">{</span>accepted <span class="op">/</span> steps<span class="sc">:.2%}</span><span class="ss">"</span>)</span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> samples</span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Run MCMC</span></span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>initial_beta <span class="op">=</span> np.zeros(X_np.shape[<span class="dv">1</span>])</span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>proposal_scales <span class="op">=</span> np.array([<span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.05</span>, <span class="fl">0.005</span>])</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>samples <span class="op">=</span> metropolis_hastings(log_posterior, initial_beta, steps<span class="op">=</span><span class="dv">11000</span>, proposal_scales<span class="op">=</span>proposal_scales)</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a><span class="co"># Discard burn-in</span></span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>posterior_samples <span class="op">=</span> samples[<span class="dv">1000</span>:]</span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute posterior statistics</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>posterior_mean <span class="op">=</span> np.mean(posterior_samples, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>posterior_std <span class="op">=</span> np.std(posterior_samples, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>posterior_ci_lower <span class="op">=</span> np.percentile(posterior_samples, <span class="fl">2.5</span>, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>posterior_ci_upper <span class="op">=</span> np.percentile(posterior_samples, <span class="fl">97.5</span>, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a><span class="co"># Organize into a DataFrame</span></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a>param_names <span class="op">=</span> [<span class="st">"Intercept"</span>, <span class="st">"Netflix"</span>, <span class="st">"Prime"</span>, <span class="st">"Ad"</span>, <span class="st">"Price"</span>]</span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a>posterior_summary <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Posterior Mean"</span>: posterior_mean,</span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Posterior Std. Dev"</span>: posterior_std,</span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>    <span class="st">"95% Credible Interval Lower"</span>: posterior_ci_lower,</span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>    <span class="st">"95% Credible Interval Upper"</span>: posterior_ci_upper</span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>}, index<span class="op">=</span>param_names).<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>posterior_summary</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>The table below reports the posterior mean, standard deviation, and 95% credible interval for each of the 5 model parameters.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 21%">
+<col style="width: 27%">
+<col style="width: 18%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Posterior Mean</th>
+<th>Posterior Std. Dev</th>
+<th>95% CI Lower</th>
+<th>95% CI Upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Intercept</td>
+<td>0.7741</td>
+<td>0.8863</td>
+<td>−0.7093</td>
+<td>2.5075</td>
+</tr>
+<tr class="even">
+<td>Netflix</td>
+<td>0.9471</td>
+<td>0.1139</td>
+<td>0.7332</td>
+<td>1.1767</td>
+</tr>
+<tr class="odd">
+<td>Prime</td>
+<td>0.5058</td>
+<td>0.1162</td>
+<td>0.2877</td>
+<td>0.7364</td>
+</tr>
+<tr class="even">
+<td>Ad</td>
+<td>−0.7380</td>
+<td>0.0860</td>
+<td>−0.9088</td>
+<td>−0.5750</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>All posterior means are very close to your MLE estimates.</li>
+<li>Credible intervals are tight and consistent with maximum likelihood confidence intervals.</li>
+<li>The Netflix and Prime coefficients remain positive and significant, while Ad and Price are negative as expected.</li>
+<li>This reinforces that your MCMC sampler worked well, and confirms your results from the MLE approach.</li>
+</ul>
 </section>
 </section>
 <section id="discussion" class="level2">

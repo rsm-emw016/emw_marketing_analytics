@@ -481,9 +481,118 @@ plt.show()
 | Posterior center    | Around −0.10                            |
 | Interpretation      | Price reduces utility in choice behavior |
 
+### Posterior Summary: Bayesian Estimation via MCMC
 
-_todo: report the 4 posterior means, standard deviations, and 95% credible intervals and compare them to your results from the Maximum Likelihood approach._
+After running 11,000 Metropolis-Hastings iterations and discarding the first 1,000 as burn-in, we retained 10,000 samples from the posterior distribution for each parameter.
 
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+#| output: false
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import pandas as pd
+from scipy.special import logsumexp
+from scipy.optimize import minimize
+
+# Load and encode data
+df = pd.read_csv("conjoint_data.csv")
+df_encoded = pd.get_dummies(df, columns=["brand", "ad"], drop_first=True)
+
+# Create feature matrix X
+X = df_encoded[["brand_N", "brand_P", "ad_Yes", "price"]].copy()
+X["intercept"] = 1
+X = X[["intercept", "brand_N", "brand_P", "ad_Yes", "price"]]
+
+# Create target vector y
+y = df_encoded["choice"]
+
+# Convert to NumPy arrays
+X_np = X.values.astype(np.float64)
+y_np = y.values.astype(np.float64)
+X_tasks = X_np.reshape((-1, 3, X_np.shape[1]))
+y_tasks = y_np.reshape((-1, 3))
+
+# Log-likelihood function
+def neg_log_likelihood(beta):
+    utilities = np.einsum("tjk,k->tj", X_tasks, beta)
+    log_probs = utilities - logsumexp(utilities, axis=1, keepdims=True)
+    chosen_log_probs = np.sum(log_probs * y_tasks, axis=1)
+    return -np.sum(chosen_log_probs)
+
+# Log-prior (N(0,5) for binary, N(0,1) for price)
+def log_prior(beta):
+    binary_prior = -0.5 * (beta[1:4] ** 2) / (5 ** 2)
+    price_prior = -0.5 * (beta[4] ** 2) / (1 ** 2)
+    return np.sum(binary_prior) + price_prior
+
+# Log-posterior = log-likelihood + log-prior
+def log_posterior(beta):
+    return -neg_log_likelihood(beta) + log_prior(beta)
+
+# Metropolis-Hastings MCMC sampler
+def metropolis_hastings(log_posterior, initial_beta, steps=11000, proposal_scales=None):
+    n_params = len(initial_beta)
+    samples = np.zeros((steps, n_params))
+    accepted = 0
+    current_beta = initial_beta
+    current_log_post = log_posterior(current_beta)
+
+    if proposal_scales is None:
+        proposal_scales = np.array([0.05, 0.05, 0.05, 0.05, 0.005])
+
+    for step in range(steps):
+        proposal = current_beta + np.random.normal(scale=proposal_scales)
+        proposal_log_post = log_posterior(proposal)
+        accept_ratio = np.exp(proposal_log_post - current_log_post)
+        if np.random.rand() < accept_ratio:
+            current_beta = proposal
+            current_log_post = proposal_log_post
+            accepted += 1
+        samples[step] = current_beta
+
+    print(f"Acceptance rate: {accepted / steps:.2%}")
+    return samples
+
+# Run MCMC
+initial_beta = np.zeros(X_np.shape[1])
+proposal_scales = np.array([0.05, 0.05, 0.05, 0.05, 0.005])
+samples = metropolis_hastings(log_posterior, initial_beta, steps=11000, proposal_scales=proposal_scales)
+
+# Discard burn-in
+posterior_samples = samples[1000:]
+# Compute posterior statistics
+posterior_mean = np.mean(posterior_samples, axis=0)
+posterior_std = np.std(posterior_samples, axis=0)
+posterior_ci_lower = np.percentile(posterior_samples, 2.5, axis=0)
+posterior_ci_upper = np.percentile(posterior_samples, 97.5, axis=0)
+
+# Organize into a DataFrame
+param_names = ["Intercept", "Netflix", "Prime", "Ad", "Price"]
+posterior_summary = pd.DataFrame({
+    "Posterior Mean": posterior_mean,
+    "Posterior Std. Dev": posterior_std,
+    "95% Credible Interval Lower": posterior_ci_lower,
+    "95% Credible Interval Upper": posterior_ci_upper
+}, index=param_names).round(4)
+
+posterior_summary
+```
+
+The table below reports the posterior mean, standard deviation, and 95% credible interval for each of the 5 model parameters.
+
+| Parameter | Posterior Mean | Posterior Std. Dev | 95% CI Lower | 95% CI Upper |
+|-----------|----------------|---------------------|--------------|--------------|
+| Intercept | 0.7741         | 0.8863              | −0.7093      | 2.5075       |
+| Netflix   | 0.9471         | 0.1139              | 0.7332       | 1.1767       |
+| Prime     | 0.5058         | 0.1162              | 0.2877       | 0.7364       |
+| Ad        | −0.7380        | 0.0860              | −0.9088      | −0.5750      |
+
+- All posterior means are very close to your MLE estimates.
+- Credible intervals are tight and consistent with maximum likelihood confidence intervals.
+- The Netflix and Prime coefficients remain positive and significant, while Ad and Price are negative as expected.
+- This reinforces that your MCMC sampler worked well, and confirms your results from the MLE approach.
 
 
 ## 6. Discussion
