@@ -43,7 +43,6 @@ And the joint log-likelihood function is:
 $$ \ell_n(\beta) = \sum_{i=1}^n \sum_{j=1}^J \delta_{ij} \log(\mathbb{P}_i(j)) $$
 
 
-
 ## 2. Simulate Conjoint Data
 
 We will simulate data from a conjoint experiment about video content streaming services. We elect to simulate 100 respondents, each completing 10 choice tasks, where they choose from three alternatives per task. For simplicity, there is not a "no choice" option; each simulated respondent must select one of the 3 alternatives. 
@@ -129,7 +128,6 @@ conjoint_data <- conjoint_data[ , c("resp", "task", "brand", "ad", "price", "cho
 rm(list=setdiff(ls(), "conjoint_data"))
 ```
 ::::
-
 
 
 ## 3. Preparing the Data for Estimation
@@ -621,8 +619,6 @@ $$
 
 This structure enables us to capture heterogeneity across respondents. To simulate hierarchical data, we would draw a different $\beta_i$ for each respondent and use these individual-level coefficients to generate their choices. For estimation, we could use **hierarchical Bayesian methods** (such as Gibbs sampling or Hamiltonian Monte Carlo) or frequentist mixed logit approaches. These models provide more realistic predictions, enable personalization, and are widely used in industry to analyze large-scale conjoint data.
 
-
-_todo: At a high level, discuss what change you would need to make in order to simulate data from --- and estimate the parameters of --- a multi-level (aka random-parameter or hierarchical) model. This is the model we use to analyze "real world" conjoint data._
 
 
 
