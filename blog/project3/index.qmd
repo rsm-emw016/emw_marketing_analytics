@@ -262,16 +262,225 @@ The results indicate strong preferences for Netflix and Prime (relative to Hulu)
 
 ## 5. Estimation via Bayesian Methods
 
-_todo: code up a metropolis-hasting MCMC sampler of the posterior distribution. Take 11,000 steps and throw away the first 1,000, retaining the subsequent 10,000._
+### Posterior Simulation: Metropolis-Hastings
 
-_hint: Use N(0,5) priors for the betas on the binary variables, and a N(0,1) prior for the price beta._
+We use a Metropolis-Hastings MCMC sampler to simulate draws from the posterior distribution of our model parameters. We take 11,000 steps, discard the first 1,000 as burn-in, and retain 10,000 posterior draws for inference.
 
-_hint: instead of calculating post=lik*prior, you can work in the log-space and calculate log-post = log-lik + log-prior (this should enable you to re-use your log-likelihood function from the MLE section just above)_
+The proposal distribution is a multivariate normal with independent dimensions. The first three parameters (Netflix, Prime, Ad) use a standard deviation of 0.05, and the price coefficient uses 0.005, reflecting tighter prior belief.
 
-_hint: King Markov (in the video) use a candidate distribution of a coin flip to decide whether to move left or right among his islands.  Unlike King Markov, we have 4 dimensions (because we have 4 betas) and our dimensions are continuous.  So, use a multivariate normal distribution to pospose the next location for the algorithm to move to. I recommend a MNV(mu, Sigma) where mu=c(0,0,0,0) and sigma has diagonal values c(0.05, 0.05, 0.05, 0.005) and zeros on the off-diagonal.  Since this MVN has no covariances, you can sample each dimension independently (so 4 univariate normals instead of 1 multivariate normal), where the first 3 univariate normals are N(0,0.05) and the last one if N(0,0.005)._
+Our sampler achieved an acceptance rate of **56.40%**, which is in the desirable range for good mixing.
 
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+#| output: false
+import numpy as np
+import pandas as pd
+from scipy.special import logsumexp
+from scipy.optimize import minimize
 
-_todo: for at least one of the 4 parameters, show the trace plot of the algorithm, as well as the histogram of the posterior distribution._
+# Load and encode data
+df = pd.read_csv("conjoint_data.csv")
+df_encoded = pd.get_dummies(df, columns=["brand", "ad"], drop_first=True)
+
+# Create feature matrix X
+X = df_encoded[["brand_N", "brand_P", "ad_Yes", "price"]].copy()
+X["intercept"] = 1
+X = X[["intercept", "brand_N", "brand_P", "ad_Yes", "price"]]
+
+# Create target vector y
+y = df_encoded["choice"]
+
+# Convert to NumPy arrays
+X_np = X.values.astype(np.float64)
+y_np = y.values.astype(np.float64)
+X_tasks = X_np.reshape((-1, 3, X_np.shape[1]))
+y_tasks = y_np.reshape((-1, 3))
+
+# Log-likelihood function
+def neg_log_likelihood(beta):
+    utilities = np.einsum("tjk,k->tj", X_tasks, beta)
+    log_probs = utilities - logsumexp(utilities, axis=1, keepdims=True)
+    chosen_log_probs = np.sum(log_probs * y_tasks, axis=1)
+    return -np.sum(chosen_log_probs)
+
+# Log-prior (N(0,5) for binary, N(0,1) for price)
+def log_prior(beta):
+    binary_prior = -0.5 * (beta[1:4] ** 2) / (5 ** 2)
+    price_prior = -0.5 * (beta[4] ** 2) / (1 ** 2)
+    return np.sum(binary_prior) + price_prior
+
+# Log-posterior = log-likelihood + log-prior
+def log_posterior(beta):
+    return -neg_log_likelihood(beta) + log_prior(beta)
+
+# Metropolis-Hastings MCMC sampler
+def metropolis_hastings(log_posterior, initial_beta, steps=11000, proposal_scales=None):
+    n_params = len(initial_beta)
+    samples = np.zeros((steps, n_params))
+    accepted = 0
+    current_beta = initial_beta
+    current_log_post = log_posterior(current_beta)
+
+    if proposal_scales is None:
+        proposal_scales = np.array([0.05, 0.05, 0.05, 0.05, 0.005])
+
+    for step in range(steps):
+        proposal = current_beta + np.random.normal(scale=proposal_scales)
+        proposal_log_post = log_posterior(proposal)
+        accept_ratio = np.exp(proposal_log_post - current_log_post)
+        if np.random.rand() < accept_ratio:
+            current_beta = proposal
+            current_log_post = proposal_log_post
+            accepted += 1
+        samples[step] = current_beta
+
+    print(f"Acceptance rate: {accepted / steps:.2%}")
+    return samples
+
+# Run MCMC
+initial_beta = np.zeros(X_np.shape[1])
+proposal_scales = np.array([0.05, 0.05, 0.05, 0.05, 0.005])
+samples = metropolis_hastings(log_posterior, initial_beta, steps=11000, proposal_scales=proposal_scales)
+
+# Discard burn-in
+posterior_samples = samples[1000:]
+posterior_samples
+```
+
+The result is a NumPy array of shape (10,000, 5), where each column represents a parameter:
+
+| Index | Parameter |
+|-------|-----------|
+| 0     | Intercept |
+| 1     | Netflix   |
+| 2     | Prime     |
+| 3     | Ad        |
+| 4     | Price     |
+
+### Posterior Visualization: Price Coefficient
+
+We used a Metropolis-Hastings MCMC sampler to estimate the posterior distribution of the Price coefficient. The plots below include:
+
+- A trace plot to assess convergence behavior
+- A posterior histogram to visualize the shape and spread of the sampled values
+
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
+import pandas as pd
+from scipy.special import logsumexp
+from scipy.optimize import minimize
+
+# Load and encode data
+df = pd.read_csv("conjoint_data.csv")
+df_encoded = pd.get_dummies(df, columns=["brand", "ad"], drop_first=True)
+
+# Create feature matrix X
+X = df_encoded[["brand_N", "brand_P", "ad_Yes", "price"]].copy()
+X["intercept"] = 1
+X = X[["intercept", "brand_N", "brand_P", "ad_Yes", "price"]]
+
+# Create target vector y
+y = df_encoded["choice"]
+
+# Convert to NumPy arrays
+X_np = X.values.astype(np.float64)
+y_np = y.values.astype(np.float64)
+X_tasks = X_np.reshape((-1, 3, X_np.shape[1]))
+y_tasks = y_np.reshape((-1, 3))
+
+# Log-likelihood function
+def neg_log_likelihood(beta):
+    utilities = np.einsum("tjk,k->tj", X_tasks, beta)
+    log_probs = utilities - logsumexp(utilities, axis=1, keepdims=True)
+    chosen_log_probs = np.sum(log_probs * y_tasks, axis=1)
+    return -np.sum(chosen_log_probs)
+
+# Log-prior (N(0,5) for binary, N(0,1) for price)
+def log_prior(beta):
+    binary_prior = -0.5 * (beta[1:4] ** 2) / (5 ** 2)
+    price_prior = -0.5 * (beta[4] ** 2) / (1 ** 2)
+    return np.sum(binary_prior) + price_prior
+
+# Log-posterior = log-likelihood + log-prior
+def log_posterior(beta):
+    return -neg_log_likelihood(beta) + log_prior(beta)
+
+# Metropolis-Hastings MCMC sampler
+def metropolis_hastings(log_posterior, initial_beta, steps=11000, proposal_scales=None):
+    n_params = len(initial_beta)
+    samples = np.zeros((steps, n_params))
+    accepted = 0
+    current_beta = initial_beta
+    current_log_post = log_posterior(current_beta)
+
+    if proposal_scales is None:
+        proposal_scales = np.array([0.05, 0.05, 0.05, 0.05, 0.005])
+
+    for step in range(steps):
+        proposal = current_beta + np.random.normal(scale=proposal_scales)
+        proposal_log_post = log_posterior(proposal)
+        accept_ratio = np.exp(proposal_log_post - current_log_post)
+        if np.random.rand() < accept_ratio:
+            current_beta = proposal
+            current_log_post = proposal_log_post
+            accepted += 1
+        samples[step] = current_beta
+
+    print(f"Acceptance rate: {accepted / steps:.2%}")
+    return samples
+
+# Run MCMC
+initial_beta = np.zeros(X_np.shape[1])
+proposal_scales = np.array([0.05, 0.05, 0.05, 0.05, 0.005])
+samples = metropolis_hastings(log_posterior, initial_beta, steps=11000, proposal_scales=proposal_scales)
+
+# Discard burn-in
+posterior_samples = samples[1000:]
+posterior_samples
+
+# Set parameter names
+param_names = ["Intercept", "Netflix", "Prime", "Ad", "Price"]
+
+# Choose one parameter to plot (e.g., Price = index 4)
+param_index = 4
+param_label = param_names[param_index]
+samples_param = posterior_samples[:, param_index]
+
+# Create figure with trace and histogram
+fig, axes = plt.subplots(2, 1, figsize=(10, 6), constrained_layout=True)
+
+# Trace plot
+axes[0].plot(samples_param, alpha=0.8, linewidth=0.8)
+axes[0].set_title(f"Trace Plot for {param_label} Coefficient")
+axes[0].set_ylabel("Value")
+axes[0].set_xlabel("Iteration")
+
+# Histogram
+sns.histplot(samples_param, bins=50, kde=True, ax=axes[1], color="skyblue")
+axes[1].set_title(f"Posterior Distribution of {param_label} Coefficient")
+axes[1].set_xlabel("Coefficient Value")
+axes[1].set_ylabel("Frequency")
+
+plt.tight_layout()
+plt.show()
+```
+
+- The trace plot shows stable, well-mixed values with no drift — indicating convergence and good mixing.
+- The posterior distribution is approximately normal and centered near −0.10.
+- This supports our interpretation that increasing price reduces utility, aligning well with economic theory and the MLE result.
+
+| Feature             | Observation                             |
+|---------------------|------------------------------------------|
+| Trace behavior      | Well-mixed, stationary — good convergence |
+| Posterior shape     | Bell-shaped, symmetric                   |
+| Posterior center    | Around −0.10                            |
+| Interpretation      | Price reduces utility in choice behavior |
+
 
 _todo: report the 4 posterior means, standard deviations, and 95% credible intervals and compare them to your results from the Maximum Likelihood approach._
 
