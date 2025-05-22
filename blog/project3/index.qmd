@@ -597,7 +597,20 @@ The table below reports the posterior mean, standard deviation, and 95% credible
 
 ## 6. Discussion
 
-_todo: Suppose you did not simulate the data. What do you observe about the parameter estimates? What does $\beta_\text{Netflix} > \beta_\text{Prime}$ mean? Does it make sense that $\beta_\text{price}$ is negative?_
+### Parameter Interpretation (as if data were not simulated)
+
+Let’s suppose we were working with real-world data instead of simulated conjoint responses. Based on the parameter estimates, we can still derive meaningful insights:
+
+- **$\beta_\text{Netflix} > \beta_\text{Prime}$**: This implies that, all else equal, consumers prefer Netflix over Amazon Prime. The higher coefficient for Netflix indicates that it contributes more to overall utility than Prime when making a choice.
+- **$\beta_\text{Ad} < 0$**: This negative value suggests that respondents dislike advertisements — products with ads are less likely to be chosen than ad-free options.
+- **$\beta_\text{Price} < 0$**: This makes intuitive sense: higher price reduces the likelihood of choice, all else being equal. A negative price coefficient is expected in virtually any consumer utility model.
+
+If we hadn’t known this data was simulated, we would still reasonably conclude the following:
+
+- Consumers exhibit clear brand preferences, with Netflix most preferred.
+- Ad-free plans are consistently more attractive.
+- Price is a deterrent, confirming basic economic intuition.
+
 
 _todo: At a high level, discuss what change you would need to make in order to simulate data from --- and estimate the parameters of --- a multi-level (aka random-parameter or hierarchical) model. This is the model we use to analyze "real world" conjoint data._
 
