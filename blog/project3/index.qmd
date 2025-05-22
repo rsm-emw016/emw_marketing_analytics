@@ -592,6 +592,18 @@ The table below reports the posterior mean, standard deviation, and 95% credible
 - The Netflix and Prime coefficients remain positive and significant, while Ad and Price are negative as expected.
 - This reinforces that your MCMC sampler worked well, and confirms your results from the MLE approach.
 
+### Side-by-Side Comparison: MLE vs Bayesian
+
+To further validate our Bayesian estimates, we compare them to the MLE results:
+
+| Parameter | MLE Estimate | Posterior Mean | Absolute Difference |
+|-----------|--------------|----------------|----------------------|
+| Netflix   | 0.9412       | 0.9471         | +0.0059              |
+| Prime     | 0.5016       | 0.5058         | +0.0042              |
+| Ad        | -0.7320      | -0.7380        | -0.0060              |
+| Price     | -0.0995      | -0.1002        | -0.0007              |
+
+The estimates are highly consistent across methods, providing strong evidence that both MLE and MCMC approaches are identifying the same underlying preferences.
 
 ## 6. Discussion
 
