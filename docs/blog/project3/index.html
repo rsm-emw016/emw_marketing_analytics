@@ -201,6 +201,7 @@ window.Quarto = {
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">6. Discussion</a>
   <ul class="collapse">
   <li><a href="#parameter-interpretation-as-if-data-were-not-simulated" id="toc-parameter-interpretation-as-if-data-were-not-simulated" class="nav-link" data-scroll-target="#parameter-interpretation-as-if-data-were-not-simulated">Parameter Interpretation (as if data were not simulated)</a></li>
+  <li><a href="#extension-multi-level-hierarchical-models" id="toc-extension-multi-level-hierarchical-models" class="nav-link" data-scroll-target="#extension-multi-level-hierarchical-models">Extension: Multi-Level (Hierarchical) Models</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -353,7 +354,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <section id="preparing-the-data-for-estimation" class="level2">
 <h2 class="anchored" data-anchor-id="preparing-the-data-for-estimation">3. Preparing the Data for Estimation</h2>
 <p>The “hard part” of the MNL likelihood function is organizing the data, as we need to keep track of 3 dimensions (consumer <span class="math inline">\(i\)</span>, covariate <span class="math inline">\(k\)</span>, and product <span class="math inline">\(j\)</span>) instead of the typical 2 dimensions for cross-sectional regression models (consumer <span class="math inline">\(i\)</span> and covariate <span class="math inline">\(k\)</span>). The fact that each task for each respondent has the same number of alternatives (3) helps. In addition, we need to convert the categorical variables for brand and ads into binary variables.</p>
-<div id="c72d6563" class="cell" data-execution_count="1">
+<div id="48d17c33" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -386,7 +387,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <p>We estimate the model using Maximum Likelihood. First, we define the log-likelihood function based on the MNL specification, then use numerical optimization to find the MLEs. Finally, we use the inverse Hessian to obtain standard errors and construct 95% confidence intervals.</p>
 <section id="log-likelihood-function" class="level3">
 <h3 class="anchored" data-anchor-id="log-likelihood-function">Log-Likelihood Function</h3>
-<div id="99c15a60" class="cell" data-execution_count="2">
+<div id="922ab616" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> logsumexp</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -417,7 +418,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 </section>
 <section id="optimization-and-estimation-results" class="level3">
 <h3 class="anchored" data-anchor-id="optimization-and-estimation-results">Optimization and Estimation Results</h3>
-<div id="d0785735" class="cell" data-execution_count="3">
+<div id="c5e80ae8" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.special <span class="im">import</span> logsumexp</span>
@@ -520,7 +521,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <p>We use a Metropolis-Hastings MCMC sampler to simulate draws from the posterior distribution of our model parameters. We take 11,000 steps, discard the first 1,000 as burn-in, and retain 10,000 posterior draws for inference.</p>
 <p>The proposal distribution is a multivariate normal with independent dimensions. The first three parameters (Netflix, Prime, Ad) use a standard deviation of 0.05, and the price coefficient uses 0.005, reflecting tighter prior belief.</p>
 <p>Our sampler achieved an acceptance rate of <strong>56.40%</strong>, which is in the desirable range for good mixing.</p>
-<div id="70c1ca51" class="cell" data-execution_count="4">
+<div id="74e3d592" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -636,7 +637,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <li>A trace plot to assess convergence behavior</li>
 <li>A posterior histogram to visualize the shape and spread of the sampled values</li>
 </ul>
-<div id="4e6adcbd" class="cell" data-execution_count="5">
+<div id="74ea1dac" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -741,10 +742,10 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <span id="cb6-100"><a href="#cb6-100" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Acceptance rate: 57.38%</code></pre>
+<pre><code>Acceptance rate: 56.49%</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/yf/g_800hts37z9ftxfvzrc1fc80000gn/T/ipykernel_2475/2474500630.py:99: UserWarning: The figure layout has changed to tight
+<pre><code>/var/folders/yf/g_800hts37z9ftxfvzrc1fc80000gn/T/ipykernel_4169/2474500630.py:99: UserWarning: The figure layout has changed to tight
   plt.tight_layout()</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -790,7 +791,7 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <section id="posterior-summary-bayesian-estimation-via-mcmc" class="level3">
 <h3 class="anchored" data-anchor-id="posterior-summary-bayesian-estimation-via-mcmc">Posterior Summary: Bayesian Estimation via MCMC</h3>
 <p>After running 11,000 Metropolis-Hastings iterations and discarding the first 1,000 as burn-in, we retained 10,000 samples from the posterior distribution for each parameter.</p>
-<div id="5131053f" class="cell" data-execution_count="6">
+<div id="e00aebf2" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
@@ -957,7 +958,14 @@ rm(list=setdiff(ls(), "conjoint_data"))</code></pre>
 <li>Ad-free plans are consistently more attractive.</li>
 <li>Price is a deterrent, confirming basic economic intuition.</li>
 </ul>
-<p><em>todo: Suppose you did not simulate the data. What do you observe about the parameter estimates? What does <span class="math inline">\(\beta_\text{Netflix} &gt; \beta_\text{Prime}\)</span> mean? Does it make sense that <span class="math inline">\(\beta_\text{price}\)</span> is negative?</em></p>
+</section>
+<section id="extension-multi-level-hierarchical-models" class="level3">
+<h3 class="anchored" data-anchor-id="extension-multi-level-hierarchical-models">Extension: Multi-Level (Hierarchical) Models</h3>
+<p>In real-world conjoint analysis, it is unrealistic to assume all consumers share the same preferences. While the standard Multinomial Logit model estimates a single set of coefficients <span class="math inline">\(\beta\)</span> for the entire population, a <strong>multi-level (hierarchical)</strong> model allows each individual to have their own <span class="math inline">\(\beta_i\)</span>, drawn from a population distribution:</p>
+<p><span class="math display">\[
+\beta_i \sim \mathcal{N}(\mu, \Sigma)
+\]</span></p>
+<p>This structure enables us to capture heterogeneity across respondents. To simulate hierarchical data, we would draw a different <span class="math inline">\(\beta_i\)</span> for each respondent and use these individual-level coefficients to generate their choices. For estimation, we could use <strong>hierarchical Bayesian methods</strong> (such as Gibbs sampling or Hamiltonian Monte Carlo) or frequentist mixed logit approaches. These models provide more realistic predictions, enable personalization, and are widely used in industry to analyze large-scale conjoint data.</p>
 <p><em>todo: At a high level, discuss what change you would need to make in order to simulate data from — and estimate the parameters of — a multi-level (aka random-parameter or hierarchical) model. This is the model we use to analyze “real world” conjoint data.</em></p>
 
 

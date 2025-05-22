@@ -611,6 +611,16 @@ If we hadn’t known this data was simulated, we would still reasonably conclude
 - Ad-free plans are consistently more attractive.
 - Price is a deterrent, confirming basic economic intuition.
 
+### Extension: Multi-Level (Hierarchical) Models
+
+In real-world conjoint analysis, it is unrealistic to assume all consumers share the same preferences. While the standard Multinomial Logit model estimates a single set of coefficients $\beta$ for the entire population, a **multi-level (hierarchical)** model allows each individual to have their own $\beta_i$, drawn from a population distribution:
+
+$$
+\beta_i \sim \mathcal{N}(\mu, \Sigma)
+$$
+
+This structure enables us to capture heterogeneity across respondents. To simulate hierarchical data, we would draw a different $\beta_i$ for each respondent and use these individual-level coefficients to generate their choices. For estimation, we could use **hierarchical Bayesian methods** (such as Gibbs sampling or Hamiltonian Monte Carlo) or frequentist mixed logit approaches. These models provide more realistic predictions, enable personalization, and are widely used in industry to analyze large-scale conjoint data.
+
 
 _todo: At a high level, discuss what change you would need to make in order to simulate data from --- and estimate the parameters of --- a multi-level (aka random-parameter or hierarchical) model. This is the model we use to analyze "real world" conjoint data._
 
