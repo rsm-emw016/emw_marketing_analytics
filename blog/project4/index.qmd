@@ -1,0 +1,67 @@
+---
+title: "Key Drivers Analysis"
+author: Emma Wu
+date: today
+---
+
+This post implements a few measure of variable importance, interpreted as a key drivers analysis, for certain aspects of a payment card on customer satisfaction with that payment card.
+
+## Introduction
+Understanding what drives customer satisfaction is a central goal in marketing analytics. In this post, I ues a dataset that contains several card attributes and user ratings to examine how different features of a payment card influence overall satisfaction.
+
+Rather than relying on a single statistical approach, I explore multiple techniques to measure the relative importance of each variable. This type analysis helps us identify which features—such as interest rate, rewards, or service quality—are most strongly associated with satisfaction.
+
+Specifically, I apply and compare the following methods:
+
+- Pearson correlation
+- Standardized regression coefficients
+- Incremental R² (usefulness)
+- Shapley values (for linear regression)
+- Johnson’s relative weights
+- Random forest (mean decrease in Gini)
+
+By using multiple approaches, we can get more robust understanding of which card attributes matter most to customers.
+
+## Data Summary
+
+The dataset includes customer feedback on various aspects of a payment card and an overall satisfaction score. Each row represents a respondent’s satisfaction ratings on multiple features of their credit card. The key variables are:
+
+
+| Variable             | Description                                                         |
+|----------------------|---------------------------------------------------------------------|
+| `rate`            | Overall satisfaction score (target variable)                                                            |
+| `fees`              | Interest rate satisfaction                                                                                        |
+| `rewards`             | Satisfaction with fees and charges                                                                 |
+| `service`             | Satisfaction with customer service                                                                  |
+| `secure`               | Perception of card security                                                                              |
+| `online`             | Online account management satisfaction                                                         |
+
+All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these attributes best explain variation in the overall satisfaction score.
+
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+#| output: false
+import pandas as pd
+data = pd.read_csv('data_for_drivers_analysis.csv')
+data.head()
+```
+
+## Modeling Setup
+
+
+## Variables Important Methods
+
+## Interpretation and Comparison
+
+## Conclusion
+
+
+
+
+
+
+
+
+
+
