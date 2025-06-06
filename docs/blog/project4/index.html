@@ -158,7 +158,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#data-summary" id="toc-data-summary" class="nav-link" data-scroll-target="#data-summary">Data Summary</a></li>
   <li><a href="#modeling-setup" id="toc-modeling-setup" class="nav-link" data-scroll-target="#modeling-setup">Modeling Setup</a></li>
-  <li><a href="#interpretation-and-comparison" id="toc-interpretation-and-comparison" class="nav-link" data-scroll-target="#interpretation-and-comparison">Interpretation and Comparison</a></li>
+  <li><a href="#interpretation-and-comparison" id="toc-interpretation-and-comparison" class="nav-link" data-scroll-target="#interpretation-and-comparison">Interpretation and Comparison</a>
+  <ul class="collapse">
+  <li><a href="#result-of-analysis" id="toc-result-of-analysis" class="nav-link" data-scroll-target="#result-of-analysis">Result of Analysis</a></li>
+  <li><a href="#visual-summary-of-variable-importance" id="toc-visual-summary-of-variable-importance" class="nav-link" data-scroll-target="#visual-summary-of-variable-importance">Visual Summary of Variable Importance</a></li>
+  </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
@@ -200,8 +204,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This post implements a few measure of variable importance, interpreted as a key drivers analysis, for certain aspects of a payment card on customer satisfaction with that payment card.</p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Understanding what drives customer satisfaction is a central goal in marketing analytics. In this post, I ues a dataset that contains several card attributes and user ratings to examine how different features of a payment card influence overall satisfaction.</p>
-<p>Rather than relying on a single statistical approach, I explore multiple techniques to measure the relative importance of each variable. This type analysis helps us identify which features—such as interest rate, rewards, or service quality—are most strongly associated with satisfaction.</p>
+<p>Understanding what drives customer satisfaction is a central goal in marketing analytics. In this post, I use a dataset containing user ratings on various payment card features to examine which attributes—such as trust, service quality, or rewards—most influence overall satisfaction.</p>
+<p>Rather than relying on a single statistical method, I implement a suite of techniques to assess feature importance, including correlation, regression, Shapley values, Johnson’s weights, and Random Forest Gini importance.</p>
+<p>By comparing these diverse approaches, we can identify consistent key drivers and derive actionable insights for improving customer experience.</p>
 <p>Specifically, I apply and compare the following methods:</p>
 <ul>
 <li>Pearson correlation</li>
@@ -255,7 +260,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these attributes best explain variation in the overall satisfaction score.</p>
-<div id="bdc36804" class="cell" data-execution_count="1">
+<div id="735c855c" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -266,8 +271,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="modeling-setup" class="level2">
 <h2 class="anchored" data-anchor-id="modeling-setup">Modeling Setup</h2>
-<p>To identify which features are most influential in shaping overall customer satisfaction, we treat <code>overall</code> as the outcome variable and the six card attributes (<code>rate</code>, <code>fees</code>, <code>rewards</code>, <code>service</code>, <code>secure</code>, and <code>online</code>) as predictors.</p>
-<p>Rather than rely on a single model, I implement multiple approaches to assess variable importance, each offering a different perspective:</p>
+<p>To identify the most important drivers of satisfaction, we treat satisfaction as the outcome variable and the remaining attributes (e.g., trust, service, impact) as predictors. We apply multiple modeling techniques to rank variable importance from different statistical perspectives.</p>
 <ul>
 <li><strong>Correlation</strong> quantifies the strength of a linear relationship between each feature and overall satisfaction.</li>
 <li><strong>Standardized regression coefficients</strong> reflect the relative contribution of each variable in a linear regression when all predictors are on the same scale.</li>
@@ -280,9 +284,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="interpretation-and-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="interpretation-and-comparison">Interpretation and Comparison</h2>
-<div id="90d50bab" class="cell" data-execution_count="2">
+<div id="dcb037cd" class="cell" data-execution_count="2">
 <details class="code-fold">
-<summary>Exploratory Summary</summary>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
@@ -329,6 +333,231 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<section id="result-of-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="result-of-analysis">Result of Analysis</h3>
+<p>Below is a comparison of variable importance across six different methods. All values are normalized or relative, allowing direct comparison of feature influence on satisfaction.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 18%">
+<col style="width: 22%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Pearson Correlation</th>
+<th>Standardized Coefficient</th>
+<th>Usefulness (R²)</th>
+<th>Johnson Weights</th>
+<th>Random Forest (Gini)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>brand</td>
+<td>-0.0493</td>
+<td>0.0122</td>
+<td>0.0024</td>
+<td>0.0026</td>
+<td>0.1454</td>
+</tr>
+<tr class="even">
+<td>trust</td>
+<td>0.2557</td>
+<td>0.1352</td>
+<td>0.0654</td>
+<td>0.3223</td>
+<td>0.0511</td>
+</tr>
+<tr class="odd">
+<td>build</td>
+<td>0.1919</td>
+<td>0.0226</td>
+<td>0.0368</td>
+<td>0.0090</td>
+<td>0.0335</td>
+</tr>
+<tr class="even">
+<td>differs</td>
+<td>0.1848</td>
+<td>0.0333</td>
+<td>0.0342</td>
+<td>0.0195</td>
+<td>0.0305</td>
+</tr>
+<tr class="odd">
+<td>easy</td>
+<td>0.2130</td>
+<td>0.0265</td>
+<td>0.0454</td>
+<td>0.0124</td>
+<td>0.0309</td>
+</tr>
+<tr class="even">
+<td>appealing</td>
+<td>0.2080</td>
+<td>0.0411</td>
+<td>0.0433</td>
+<td>0.0298</td>
+<td>0.0291</td>
+</tr>
+<tr class="odd">
+<td>rewarding</td>
+<td>0.1946</td>
+<td>0.0071</td>
+<td>0.0379</td>
+<td>0.0009</td>
+<td>0.0302</td>
+</tr>
+<tr class="even">
+<td>popular</td>
+<td>0.1714</td>
+<td>0.0203</td>
+<td>0.0294</td>
+<td>0.0073</td>
+<td>0.0347</td>
+</tr>
+<tr class="odd">
+<td>service</td>
+<td>0.2511</td>
+<td>0.1029</td>
+<td>0.0631</td>
+<td>0.1867</td>
+<td>0.0393</td>
+</tr>
+<tr class="even">
+<td>impact</td>
+<td>0.2545</td>
+<td>0.1516</td>
+<td>0.0648</td>
+<td>0.4055</td>
+<td>0.0415</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="visual-summary-of-variable-importance" class="level3">
+<h3 class="anchored" data-anchor-id="visual-summary-of-variable-importance">Visual Summary of Variable Importance</h3>
+<p>Below is a high-level visual summary showing which features ranked highly across each method. A ✅ checkmark indicates that the variable was among the most important according to that technique.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Pearson</th>
+<th>Std Coeff</th>
+<th>Usefulness</th>
+<th>Shapley</th>
+<th>Johnson</th>
+<th>RF Gini</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>trust</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>impact</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr class="odd">
+<td>service</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>easy</td>
+<td>✅</td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>build</td>
+<td>✅</td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>appealing</td>
+<td>✅</td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>differs</td>
+<td></td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>rewarding</td>
+<td></td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>brand</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>id</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<p>Note: ✅ indicates the variable was in the top 3–4 most important features for the corresponding method.</p>
+</section>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>

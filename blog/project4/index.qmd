@@ -7,9 +7,11 @@ date: June 4, 2025
 This post implements a few measure of variable importance, interpreted as a key drivers analysis, for certain aspects of a payment card on customer satisfaction with that payment card.
 
 ## Introduction
-Understanding what drives customer satisfaction is a central goal in marketing analytics. In this post, I ues a dataset that contains several card attributes and user ratings to examine how different features of a payment card influence overall satisfaction.
+Understanding what drives customer satisfaction is a central goal in marketing analytics. In this post, I use a dataset containing user ratings on various payment card features to examine which attributes—such as trust, service quality, or rewards—most influence overall satisfaction.
 
-Rather than relying on a single statistical approach, I explore multiple techniques to measure the relative importance of each variable. This type analysis helps us identify which features—such as interest rate, rewards, or service quality—are most strongly associated with satisfaction.
+Rather than relying on a single statistical method, I implement a suite of techniques to assess feature importance, including correlation, regression, Shapley values, Johnson’s weights, and Random Forest Gini importance.
+
+By comparing these diverse approaches, we can identify consistent key drivers and derive actionable insights for improving customer experience.
 
 Specifically, I apply and compare the following methods:
 
@@ -49,9 +51,7 @@ data.head()
 
 ## Modeling Setup
 
-To identify which features are most influential in shaping overall customer satisfaction, we treat `overall` as the outcome variable and the six card attributes (`rate`, `fees`, `rewards`, `service`, `secure`, and `online`) as predictors.
-
-Rather than rely on a single model, I implement multiple approaches to assess variable importance, each offering a different perspective:
+To identify the most important drivers of satisfaction, we treat satisfaction as the outcome variable and the remaining attributes (e.g., trust, service, impact) as predictors. We apply multiple modeling techniques to rank variable importance from different statistical perspectives.
 
 - **Correlation** quantifies the strength of a linear relationship between each feature and overall satisfaction.
 - **Standardized regression coefficients** reflect the relative contribution of each variable in a linear regression when all predictors are on the same scale.
@@ -62,11 +62,11 @@ Rather than rely on a single model, I implement multiple approaches to assess va
 
 By comparing these methods side by side, we can more confidently identify the key drivers of satisfaction and understand how their importance shifts depending on the lens we use.
 
-
 ## Interpretation and Comparison
+
 ```{python}
 #| code-fold: true
-#| code-summary: "Exploratory Summary"
+#| code-summary: "Code"
 #| output: false
 import pandas as pd
 import numpy as np
@@ -114,6 +114,41 @@ results = results.round(4)
 print(results)
 
 ```
+
+### Result of Analysis 
+Below is a comparison of variable importance across six different methods. All values are normalized or relative, allowing direct comparison of feature influence on satisfaction.
+
+| Variable    | Pearson Correlation | Standardized Coefficient | Usefulness (R²) | Johnson Weights | Random Forest (Gini) |
+|-------------|----------------------|---------------------------|------------------|------------------|-----------------------|
+| brand       | -0.0493              | 0.0122                    | 0.0024           | 0.0026           | 0.1454                |
+| trust       | 0.2557               | 0.1352                    | 0.0654           | 0.3223           | 0.0511                |
+| build       | 0.1919               | 0.0226                    | 0.0368           | 0.0090           | 0.0335                |
+| differs     | 0.1848               | 0.0333                    | 0.0342           | 0.0195           | 0.0305                |
+| easy        | 0.2130               | 0.0265                    | 0.0454           | 0.0124           | 0.0309                |
+| appealing   | 0.2080               | 0.0411                    | 0.0433           | 0.0298           | 0.0291                |
+| rewarding   | 0.1946               | 0.0071                    | 0.0379           | 0.0009           | 0.0302                |
+| popular     | 0.1714               | 0.0203                    | 0.0294           | 0.0073           | 0.0347                |
+| service     | 0.2511               | 0.1029                    | 0.0631           | 0.1867           | 0.0393                |
+| impact      | 0.2545               | 0.1516                    | 0.0648           | 0.4055           | 0.0415                |
+
+
+### Visual Summary of Variable Importance
+Below is a high-level visual summary showing which features ranked highly across each method. A ✅ checkmark indicates that the variable was among the most important according to that technique.
+
+| Variable   | Pearson | Std Coeff | Usefulness | Shapley | Johnson | RF Gini |
+|------------|---------|-----------|------------|---------|---------|---------|
+| trust      | ✅      | ✅        | ✅         | ✅      | ✅      |         |
+| impact     | ✅      | ✅        | ✅         | ✅      | ✅      | ✅      |
+| service    | ✅      | ✅        | ✅         | ✅      | ✅      | ✅      |
+| easy       | ✅      |           | ✅         |         |         |         |
+| build      | ✅      |           | ✅         |         |         |         |
+| appealing  | ✅      |           | ✅         |         |         |         |
+| differs    |         |           | ✅         |         |         |         |
+| rewarding  |         |           | ✅         |         |         |         |
+| brand      |         |           |            |         |         | ✅      |
+| id         |         |           |            |         |         | ✅      |
+
+Note: ✅ indicates the variable was in the top 3–4 most important features for the corresponding method.
 
 ## Conclusion
 
