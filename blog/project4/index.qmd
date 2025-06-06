@@ -4,154 +4,58 @@ author: Emma Wu
 date: June 4, 2025
 ---
 
-This post implements a few measure of variable importance, interpreted as a key drivers analysis, for certain aspects of a payment card on customer satisfaction with that payment card.
 
-## Introduction
-Understanding what drives customer satisfaction is a central goal in marketing analytics. In this post, I use a dataset containing user ratings on various payment card features to examine which attributes—such as trust, service quality, or rewards—most influence overall satisfaction.
+## 1a. K-Means
 
-Rather than relying on a single statistical method, I implement a suite of techniques to assess feature importance, including correlation, regression, Shapley values, Johnson’s weights, and Random Forest Gini importance.
+### Data Overview
+Before implementing k-means, we briefly summarize the dataset and focus on two key features: bill length and flipper length from the Palmer Penguins dataset.
 
-By comparing these diverse approaches, we can identify consistent key drivers and derive actionable insights for improving customer experience.
+For the purpose of this analysis, we focus on two numerical features:
 
-Specifically, I apply and compare the following methods:
+| Variable           | Description                                  |
+|--------------------|----------------------------------------------|
+| `bill_length_mm`   | Length of the penguin's bill in millimeters  |
+| `flipper_length_mm`| Length of the penguin's flipper in millimeters |
 
-- Pearson correlation
-- Standardized regression coefficients
-- Incremental R² (usefulness)
-- Shapley values (for linear regression)
-- Johnson’s relative weights
-- Random forest (mean decrease in Gini)
-
-By using multiple approaches, we can get more robust understanding of which card attributes matter most to customers.
-
-## Data Summary
-
-The dataset includes customer feedback on various aspects of a payment card and an overall satisfaction score. Each row represents a respondent’s satisfaction ratings on multiple features of their credit card. The key variables are:
-
-
-| Variable             | Description                                                         |
-|----------------------|---------------------------------------------------------------------|
-| `rate`            | Overall satisfaction score (target variable)                                                            |
-| `fees`              | Interest rate satisfaction                                                                                        |
-| `rewards`             | Satisfaction with fees and charges                                                                 |
-| `service`             | Satisfaction with customer service                                                                  |
-| `secure`               | Perception of card security                                                                              |
-| `online`             | Online account management satisfaction                                                         |
-
-All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these attributes best explain variation in the overall satisfaction score.
+These features provide a morphological basis for clustering.
 
 ```{python}
 #| code-fold: true
-#| code-summary: "Code"
-#| output: false
+#| code-summary: "Load and explore penguin data"
 import pandas as pd
-data = pd.read_csv('data_for_drivers_analysis.csv')
-data.head()
+
+# Load the dataset
+df = pd.read_csv("palmer_penguins.csv")
+
+# Select relevant variables and drop missing values
+df_clean = df[["species", "bill_length_mm", "flipper_length_mm"]].dropna()
+
+# Show basic descriptive statistics
+df_clean.describe()
+
+# Show a sample of the data
+df_clean.head()
 ```
 
-## Modeling Setup
-
-To identify the most important drivers of satisfaction, we treat satisfaction as the outcome variable and the remaining attributes (e.g., trust, service, impact) as predictors. We apply multiple modeling techniques to rank variable importance from different statistical perspectives.
-
-- **Correlation** quantifies the strength of a linear relationship between each feature and overall satisfaction.
-- **Standardized regression coefficients** reflect the relative contribution of each variable in a linear regression when all predictors are on the same scale.
-- **Usefulness** (incremental R²) measures the marginal explanatory power of each predictor when added to a baseline model.
-- **Shapley values** fairly allocate the model’s predictive power among features, accounting for interactions and redundancies.
-- **Johnson's relative weights** decompose R² to estimate the proportion each variable contributes after accounting for multicollinearity.
-- **Random forest importance** uses mean decrease in Gini to quantify how much each feature contributes to reducing classification error.
-
-By comparing these methods side by side, we can more confidently identify the key drivers of satisfaction and understand how their importance shifts depending on the lens we use.
-
-## Interpretation and Comparison
+The scatterplot below shows the relationship between bill length and flipper length. We observe clear groupings and a strong positive relationship — penguins with longer bills tend to have longer flippers. This structure suggests that K-Means clustering may reveal meaningful group separation in this two-dimensional space.
 
 ```{python}
 #| code-fold: true
-#| code-summary: "Code"
-#| output: false
+#| code-summary: "Visualize penguin data"
 import pandas as pd
-import numpy as np
-from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import StandardScaler
-import warnings
-warnings.filterwarnings("ignore")
+import seaborn as sns
+import matplotlib.pyplot as plt
+df = pd.read_csv('palmer_penguins.csv')
 
-# Load dataset
-df = pd.read_csv("data_for_drivers_analysis.csv")
-
-# Set target and features
-target = "satisfaction"
-features = [col for col in df.columns if col != target]
-
-X = df[features]
-y = df[target]
-
-# 1. Pearson Correlation
-pearson_corr = df[features].corrwith(y).rename("Pearson Correlation")
-
-# 2. Standardized Coefficients
-X_scaled = StandardScaler().fit_transform(X)
-linreg = LinearRegression().fit(X_scaled, y)
-standardized_coefs = pd.Series(linreg.coef_, index=features, name="Standardized Coefficients")
-
-# 3. Usefulness (incremental R²)
-usefulness = {}
-for col in features:
-    r2 = LinearRegression().fit(X[[col]], y).score(X[[col]], y)
-    usefulness[col] = r2
-usefulness = pd.Series(usefulness, name="Usefulness (R²)")
-
-# 4. Johnson’s Relative Weights (approx. from squared standardized beta)
-johnson_weights = (standardized_coefs**2 / np.sum(standardized_coefs**2)).rename("Johnson Weights")
-
-# 5. Random Forest Importance
-rf = RandomForestRegressor(random_state=0).fit(X, y)
-rf_importance = pd.Series(rf.feature_importances_, index=features, name="Random Forest (Gini)")
-
-# Combine results
-results = pd.concat([pearson_corr, standardized_coefs, usefulness, johnson_weights, rf_importance], axis=1)
-results = results.round(4)
-print(results)
-
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x="bill_length_mm", y="flipper_length_mm", data=df)
+plt.title("Palmer Penguins: Bill vs. Flipper Length")
+plt.xlabel("Bill Length (mm)")
+plt.ylabel("Flipper Length (mm)")
+plt.grid(True)
+plt.tight_layout()
+plt.show()
 ```
-
-### Result of Analysis 
-Below is a comparison of variable importance across six different methods. All values are normalized or relative, allowing direct comparison of feature influence on satisfaction.
-
-| Variable    | Pearson Correlation | Standardized Coefficient | Usefulness (R²) | Johnson Weights | Random Forest (Gini) |
-|-------------|----------------------|---------------------------|------------------|------------------|-----------------------|
-| brand       | -0.0493              | 0.0122                    | 0.0024           | 0.0026           | 0.1454                |
-| trust       | 0.2557               | 0.1352                    | 0.0654           | 0.3223           | 0.0511                |
-| build       | 0.1919               | 0.0226                    | 0.0368           | 0.0090           | 0.0335                |
-| differs     | 0.1848               | 0.0333                    | 0.0342           | 0.0195           | 0.0305                |
-| easy        | 0.2130               | 0.0265                    | 0.0454           | 0.0124           | 0.0309                |
-| appealing   | 0.2080               | 0.0411                    | 0.0433           | 0.0298           | 0.0291                |
-| rewarding   | 0.1946               | 0.0071                    | 0.0379           | 0.0009           | 0.0302                |
-| popular     | 0.1714               | 0.0203                    | 0.0294           | 0.0073           | 0.0347                |
-| service     | 0.2511               | 0.1029                    | 0.0631           | 0.1867           | 0.0393                |
-| impact      | 0.2545               | 0.1516                    | 0.0648           | 0.4055           | 0.0415                |
-
-
-### Visual Summary of Variable Importance
-Below is a high-level visual summary showing which features ranked highly across each method. A ✅ checkmark indicates that the variable was among the most important according to that technique.
-
-| Variable   | Pearson | Std Coeff | Usefulness | Shapley | Johnson | RF Gini |
-|------------|---------|-----------|------------|---------|---------|---------|
-| trust      | ✅      | ✅        | ✅         | ✅      | ✅      |         |
-| impact     | ✅      | ✅        | ✅         | ✅      | ✅      | ✅      |
-| service    | ✅      | ✅        | ✅         | ✅      | ✅      | ✅      |
-| easy       | ✅      |           | ✅         |         |         |         |
-| build      | ✅      |           | ✅         |         |         |         |
-| appealing  | ✅      |           | ✅         |         |         |         |
-| differs    |         |           | ✅         |         |         |         |
-| rewarding  |         |           | ✅         |         |         |         |
-| brand      |         |           |            |         |         | ✅      |
-| id         |         |           |            |         |         | ✅      |
-
-Note: ✅ indicates the variable was in the top 3–4 most important features for the corresponding method.
-
-## Conclusion
-
 
 
 

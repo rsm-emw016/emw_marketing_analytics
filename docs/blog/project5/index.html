@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Emma Wu">
-<meta name="dcterms.date" content="2025-06-05">
+<meta name="dcterms.date" content="2025-06-06">
 
 <title>Segmenting Yogurt Shoppers – Emma’s Website</title>
 <style>
@@ -22,10 +22,44 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -68,6 +102,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -119,6 +156,14 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#data-summary" id="toc-data-summary" class="nav-link" data-scroll-target="#data-summary">Data Summary</a></li>
+  <li><a href="#modeling-setup" id="toc-modeling-setup" class="nav-link" data-scroll-target="#modeling-setup">Modeling Setup</a></li>
+  <li><a href="#interpretation-and-comparison" id="toc-interpretation-and-comparison" class="nav-link" data-scroll-target="#interpretation-and-comparison">Interpretation and Comparison</a>
+  <ul class="collapse">
+  <li><a href="#result-of-analysis" id="toc-result-of-analysis" class="nav-link" data-scroll-target="#result-of-analysis">Result of Analysis</a></li>
+  <li><a href="#visual-summary-of-variable-importance" id="toc-visual-summary-of-variable-importance" class="nav-link" data-scroll-target="#visual-summary-of-variable-importance">Visual Summary of Variable Importance</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -144,7 +189,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 5, 2025</p>
+      <p class="date">June 6, 2025</p>
     </div>
   </div>
   
@@ -156,11 +201,367 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<p>This post is the <strong>supervised machine learning</strong> portion of the HW4 assignment. In this analysis, we model satisfaction scores using a set of known card feature ratings as predictors. Since the target variable (<code>satisfaction</code>) is observed, we apply several supervised methods to assess the relative importance of different predictors.</p>
 <p>This post implements a few measure of variable importance, interpreted as a key drivers analysis, for certain aspects of a payment card on customer satisfaction with that payment card.</p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p><em>todo: replicate the table on slide 19 of the session 4 slides. This involves calculating pearson correlations, standardized regression coefficients, “usefulness”, Shapley values for a linear regression, Johnson’s relative weights, and the mean decrease in the gini coefficient from a random forest. You may use packages built into R or Python.</em></p>
-<p><em>If you want a challenge, either (1) implement one or more of the measures yourself. “Usefulness” is rather easy to program up. Shapley values for linear regression are a bit more work. Or (2) add additional measures to the table such as the importance scores from XGBoost.</em></p>
+<p>Understanding what drives customer satisfaction is a central goal in marketing analytics. In this post, I use a dataset containing user ratings on various payment card features to examine which attributes—such as trust, service quality, or rewards—most influence overall satisfaction.</p>
+<p>Rather than relying on a single statistical method, I implement a suite of techniques to assess feature importance, including correlation, regression, Shapley values, Johnson’s weights, and Random Forest Gini importance.</p>
+<p>By comparing these diverse approaches, we can identify consistent key drivers and derive actionable insights for improving customer experience.</p>
+<p>Specifically, I apply and compare the following methods:</p>
+<ul>
+<li>Pearson correlation</li>
+<li>Standardized regression coefficients</li>
+<li>Incremental R² (usefulness)</li>
+<li>Shapley values (for linear regression)</li>
+<li>Johnson’s relative weights</li>
+<li>Random forest (mean decrease in Gini)</li>
+</ul>
+<p>By using multiple approaches, we can get more robust understanding of which card attributes matter most to customers.</p>
+</section>
+<section id="data-summary" class="level2">
+<h2 class="anchored" data-anchor-id="data-summary">Data Summary</h2>
+<p>The dataset includes customer feedback on various aspects of a payment card and an overall satisfaction score. Each row represents a respondent’s satisfaction ratings on multiple features of their credit card. The key variables are:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rate</code></td>
+<td>Overall satisfaction score (target variable)</td>
+</tr>
+<tr class="even">
+<td><code>fees</code></td>
+<td>Interest rate satisfaction</td>
+</tr>
+<tr class="odd">
+<td><code>rewards</code></td>
+<td>Satisfaction with fees and charges</td>
+</tr>
+<tr class="even">
+<td><code>service</code></td>
+<td>Satisfaction with customer service</td>
+</tr>
+<tr class="odd">
+<td><code>secure</code></td>
+<td>Perception of card security</td>
+</tr>
+<tr class="even">
+<td><code>online</code></td>
+<td>Online account management satisfaction</td>
+</tr>
+</tbody>
+</table>
+<p>All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these attributes best explain variation in the overall satisfaction score.</p>
+<div id="02e2d2ef" class="cell" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">'data_for_drivers_analysis.csv'</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="modeling-setup" class="level2">
+<h2 class="anchored" data-anchor-id="modeling-setup">Modeling Setup</h2>
+<p>To identify the most important drivers of satisfaction, we treat satisfaction as the outcome variable and the remaining attributes (e.g., trust, service, impact) as predictors. We apply multiple modeling techniques to rank variable importance from different statistical perspectives.</p>
+<ul>
+<li><strong>Correlation</strong> quantifies the strength of a linear relationship between each feature and overall satisfaction.</li>
+<li><strong>Standardized regression coefficients</strong> reflect the relative contribution of each variable in a linear regression when all predictors are on the same scale.</li>
+<li><strong>Usefulness</strong> (incremental R²) measures the marginal explanatory power of each predictor when added to a baseline model.</li>
+<li><strong>Shapley values</strong> fairly allocate the model’s predictive power among features, accounting for interactions and redundancies.</li>
+<li><strong>Johnson’s relative weights</strong> decompose R² to estimate the proportion each variable contributes after accounting for multicollinearity.</li>
+<li><strong>Random forest importance</strong> uses mean decrease in Gini to quantify how much each feature contributes to reducing classification error.</li>
+</ul>
+<p>By comparing these methods side by side, we can more confidently identify the key drivers of satisfaction and understand how their importance shifts depending on the lens we use.</p>
+</section>
+<section id="interpretation-and-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="interpretation-and-comparison">Interpretation and Comparison</h2>
+<div id="2f95a602" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data_for_drivers_analysis.csv"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Set target and features</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> <span class="st">"satisfaction"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> df.columns <span class="cf">if</span> col <span class="op">!=</span> target]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[features]</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[target]</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Pearson Correlation</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>pearson_corr <span class="op">=</span> df[features].corrwith(y).rename(<span class="st">"Pearson Correlation"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Standardized Coefficients</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> StandardScaler().fit_transform(X)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>linreg <span class="op">=</span> LinearRegression().fit(X_scaled, y)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>standardized_coefs <span class="op">=</span> pd.Series(linreg.coef_, index<span class="op">=</span>features, name<span class="op">=</span><span class="st">"Standardized Coefficients"</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Usefulness (incremental R²)</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>usefulness <span class="op">=</span> {}</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> features:</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    r2 <span class="op">=</span> LinearRegression().fit(X[[col]], y).score(X[[col]], y)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    usefulness[col] <span class="op">=</span> r2</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>usefulness <span class="op">=</span> pd.Series(usefulness, name<span class="op">=</span><span class="st">"Usefulness (R²)"</span>)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Johnson’s Relative Weights (approx. from squared standardized beta)</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>johnson_weights <span class="op">=</span> (standardized_coefs<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> np.<span class="bu">sum</span>(standardized_coefs<span class="op">**</span><span class="dv">2</span>)).rename(<span class="st">"Johnson Weights"</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Random Forest Importance</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> RandomForestRegressor(random_state<span class="op">=</span><span class="dv">0</span>).fit(X, y)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>rf_importance <span class="op">=</span> pd.Series(rf.feature_importances_, index<span class="op">=</span>features, name<span class="op">=</span><span class="st">"Random Forest (Gini)"</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine results</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.concat([pearson_corr, standardized_coefs, usefulness, johnson_weights, rf_importance], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="result-of-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="result-of-analysis">Result of Analysis</h3>
+<p>Below is a comparison of variable importance across six different methods. All values are normalized or relative, allowing direct comparison of feature influence on satisfaction.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 18%">
+<col style="width: 22%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Pearson Correlation</th>
+<th>Standardized Coefficient</th>
+<th>Usefulness (R²)</th>
+<th>Johnson Weights</th>
+<th>Random Forest (Gini)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>brand</td>
+<td>-0.0493</td>
+<td>0.0122</td>
+<td>0.0024</td>
+<td>0.0026</td>
+<td>0.1454</td>
+</tr>
+<tr class="even">
+<td>trust</td>
+<td>0.2557</td>
+<td>0.1352</td>
+<td>0.0654</td>
+<td>0.3223</td>
+<td>0.0511</td>
+</tr>
+<tr class="odd">
+<td>build</td>
+<td>0.1919</td>
+<td>0.0226</td>
+<td>0.0368</td>
+<td>0.0090</td>
+<td>0.0335</td>
+</tr>
+<tr class="even">
+<td>differs</td>
+<td>0.1848</td>
+<td>0.0333</td>
+<td>0.0342</td>
+<td>0.0195</td>
+<td>0.0305</td>
+</tr>
+<tr class="odd">
+<td>easy</td>
+<td>0.2130</td>
+<td>0.0265</td>
+<td>0.0454</td>
+<td>0.0124</td>
+<td>0.0309</td>
+</tr>
+<tr class="even">
+<td>appealing</td>
+<td>0.2080</td>
+<td>0.0411</td>
+<td>0.0433</td>
+<td>0.0298</td>
+<td>0.0291</td>
+</tr>
+<tr class="odd">
+<td>rewarding</td>
+<td>0.1946</td>
+<td>0.0071</td>
+<td>0.0379</td>
+<td>0.0009</td>
+<td>0.0302</td>
+</tr>
+<tr class="even">
+<td>popular</td>
+<td>0.1714</td>
+<td>0.0203</td>
+<td>0.0294</td>
+<td>0.0073</td>
+<td>0.0347</td>
+</tr>
+<tr class="odd">
+<td>service</td>
+<td>0.2511</td>
+<td>0.1029</td>
+<td>0.0631</td>
+<td>0.1867</td>
+<td>0.0393</td>
+</tr>
+<tr class="even">
+<td>impact</td>
+<td>0.2545</td>
+<td>0.1516</td>
+<td>0.0648</td>
+<td>0.4055</td>
+<td>0.0415</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="visual-summary-of-variable-importance" class="level3">
+<h3 class="anchored" data-anchor-id="visual-summary-of-variable-importance">Visual Summary of Variable Importance</h3>
+<p>Below is a high-level visual summary showing which features ranked highly across each method. A ✅ checkmark indicates that the variable was among the most important according to that technique.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Pearson</th>
+<th>Std Coeff</th>
+<th>Usefulness</th>
+<th>Shapley</th>
+<th>Johnson</th>
+<th>RF Gini</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>trust</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>impact</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr class="odd">
+<td>service</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>easy</td>
+<td>✅</td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>build</td>
+<td>✅</td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>appealing</td>
+<td>✅</td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>differs</td>
+<td></td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>rewarding</td>
+<td></td>
+<td></td>
+<td>✅</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>brand</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>id</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+<p>Note: ✅ indicates the variable was in the top 3–4 most important features for the corresponding method.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 
 
 </section>
