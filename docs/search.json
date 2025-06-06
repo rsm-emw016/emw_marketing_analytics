@@ -4,7 +4,7 @@
     "href": "blog.html",
     "title": "My Projects",
     "section": "",
-    "text": "Key Drivers Analysis\n\n\n\n\n\n\nEmma Wu\n\n\nJun 4, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nSegmenting Yogurt Shoppers\n\n\n\n\n\n\nEmma Wu\n\n\nJun 4, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nMultinomial Logit Model\n\n\n\n\n\n\nEmma Wu\n\n\nMay 27, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nPoisson Regression Examples\n\n\n\n\n\n\nEmma Wu\n\n\nMay 6, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nA Replication of Karlan and List (2007)\n\n\n\n\n\n\nEmma Wu\n\n\nApr 22, 2025\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Segmenting Yogurt Shoppers\n\n\n\n\n\n\nEmma Wu\n\n\nJun 5, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nKey Drivers Analysis\n\n\n\n\n\n\nEmma Wu\n\n\nJun 4, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nMultinomial Logit Model\n\n\n\n\n\n\nEmma Wu\n\n\nMay 27, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nPoisson Regression Examples\n\n\n\n\n\n\nEmma Wu\n\n\nMay 6, 2025\n\n\n\n\n\n\n\n\n\n\n\n\nA Replication of Karlan and List (2007)\n\n\n\n\n\n\nEmma Wu\n\n\nApr 22, 2025\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "blog/project1/index.html",
@@ -158,7 +158,7 @@
     "href": "blog/project4/index.html#modeling-setup",
     "title": "Key Drivers Analysis",
     "section": "Modeling Setup",
-    "text": "Modeling Setup"
+    "text": "Modeling Setup\nTo identify which features are most influential in shaping overall customer satisfaction, we treat overall as the outcome variable and the six card attributes (rate, fees, rewards, service, secure, and online) as predictors.\nRather than rely on a single model, I implement multiple approaches to assess variable importance, each offering a different perspective:\n\nCorrelation quantifies the strength of a linear relationship between each feature and overall satisfaction.\nStandardized regression coefficients reflect the relative contribution of each variable in a linear regression when all predictors are on the same scale.\nUsefulness (incremental R²) measures the marginal explanatory power of each predictor when added to a baseline model.\nShapley values fairly allocate the model’s predictive power among features, accounting for interactions and redundancies.\nJohnson’s relative weights decompose R² to estimate the proportion each variable contributes after accounting for multicollinearity.\nRandom forest importance uses mean decrease in Gini to quantify how much each feature contributes to reducing classification error.\n\nBy comparing these methods side by side, we can more confidently identify the key drivers of satisfaction and understand how their importance shifts depending on the lens we use."
   },
   {
     "objectID": "blog/project4/index.html#variables-important-methods",
@@ -172,7 +172,7 @@
     "href": "blog/project4/index.html#interpretation-and-comparison",
     "title": "Key Drivers Analysis",
     "section": "Interpretation and Comparison",
-    "text": "Interpretation and Comparison"
+    "text": "Interpretation and Comparison\n\n\nExploratory Summary\nimport pandas as pd\nimport numpy as np\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.ensemble import RandomForestRegressor\nfrom sklearn.preprocessing import StandardScaler\nimport warnings\nwarnings.filterwarnings(\"ignore\")\n\n# Load dataset\ndf = pd.read_csv(\"data_for_drivers_analysis.csv\")\n\n# Set target and features\ntarget = \"satisfaction\"\nfeatures = [col for col in df.columns if col != target]\n\nX = df[features]\ny = df[target]\n\n# 1. Pearson Correlation\npearson_corr = df[features].corrwith(y).rename(\"Pearson Correlation\")\n\n# 2. Standardized Coefficients\nX_scaled = StandardScaler().fit_transform(X)\nlinreg = LinearRegression().fit(X_scaled, y)\nstandardized_coefs = pd.Series(linreg.coef_, index=features, name=\"Standardized Coefficients\")\n\n# 3. Usefulness (incremental R²)\nusefulness = {}\nfor col in features:\n    r2 = LinearRegression().fit(X[[col]], y).score(X[[col]], y)\n    usefulness[col] = r2\nusefulness = pd.Series(usefulness, name=\"Usefulness (R²)\")\n\n# 4. Johnson’s Relative Weights (approx. from squared standardized beta)\njohnson_weights = (standardized_coefs**2 / np.sum(standardized_coefs**2)).rename(\"Johnson Weights\")\n\n# 5. Random Forest Importance\nrf = RandomForestRegressor(random_state=0).fit(X, y)\nrf_importance = pd.Series(rf.feature_importances_, index=features, name=\"Random Forest (Gini)\")\n\n# Combine results\nresults = pd.concat([pearson_corr, standardized_coefs, usefulness, johnson_weights, rf_importance], axis=1)\nresults = results.round(4)\nprint(results)"
   },
   {
     "objectID": "blog/project4/index.html#conclusion",
@@ -180,5 +180,19 @@
     "title": "Key Drivers Analysis",
     "section": "Conclusion",
     "text": "Conclusion"
+  },
+  {
+    "objectID": "blog/project5/index.html",
+    "href": "blog/project5/index.html",
+    "title": "Segmenting Yogurt Shoppers",
+    "section": "",
+    "text": "This post implements a few measure of variable importance, interpreted as a key drivers analysis, for certain aspects of a payment card on customer satisfaction with that payment card."
+  },
+  {
+    "objectID": "blog/project5/index.html#introduction",
+    "href": "blog/project5/index.html#introduction",
+    "title": "Segmenting Yogurt Shoppers",
+    "section": "Introduction",
+    "text": "Introduction\ntodo: replicate the table on slide 19 of the session 4 slides. This involves calculating pearson correlations, standardized regression coefficients, “usefulness”, Shapley values for a linear regression, Johnson’s relative weights, and the mean decrease in the gini coefficient from a random forest. You may use packages built into R or Python.\nIf you want a challenge, either (1) implement one or more of the measures yourself. “Usefulness” is rather easy to program up. Shapley values for linear regression are a bit more work. Or (2) add additional measures to the table such as the importance scores from XGBoost."
   }
 ]

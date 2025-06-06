@@ -158,7 +158,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
   <li><a href="#data-summary" id="toc-data-summary" class="nav-link" data-scroll-target="#data-summary">Data Summary</a></li>
   <li><a href="#modeling-setup" id="toc-modeling-setup" class="nav-link" data-scroll-target="#modeling-setup">Modeling Setup</a></li>
-  <li><a href="#variables-important-methods" id="toc-variables-important-methods" class="nav-link" data-scroll-target="#variables-important-methods">Variables Important Methods</a></li>
   <li><a href="#interpretation-and-comparison" id="toc-interpretation-and-comparison" class="nav-link" data-scroll-target="#interpretation-and-comparison">Interpretation and Comparison</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
@@ -256,7 +255,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these attributes best explain variation in the overall satisfaction score.</p>
-<div id="95740c7a" class="cell" data-execution_count="1">
+<div id="bdc36804" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -267,12 +266,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="modeling-setup" class="level2">
 <h2 class="anchored" data-anchor-id="modeling-setup">Modeling Setup</h2>
-</section>
-<section id="variables-important-methods" class="level2">
-<h2 class="anchored" data-anchor-id="variables-important-methods">Variables Important Methods</h2>
+<p>To identify which features are most influential in shaping overall customer satisfaction, we treat <code>overall</code> as the outcome variable and the six card attributes (<code>rate</code>, <code>fees</code>, <code>rewards</code>, <code>service</code>, <code>secure</code>, and <code>online</code>) as predictors.</p>
+<p>Rather than rely on a single model, I implement multiple approaches to assess variable importance, each offering a different perspective:</p>
+<ul>
+<li><strong>Correlation</strong> quantifies the strength of a linear relationship between each feature and overall satisfaction.</li>
+<li><strong>Standardized regression coefficients</strong> reflect the relative contribution of each variable in a linear regression when all predictors are on the same scale.</li>
+<li><strong>Usefulness</strong> (incremental R²) measures the marginal explanatory power of each predictor when added to a baseline model.</li>
+<li><strong>Shapley values</strong> fairly allocate the model’s predictive power among features, accounting for interactions and redundancies.</li>
+<li><strong>Johnson’s relative weights</strong> decompose R² to estimate the proportion each variable contributes after accounting for multicollinearity.</li>
+<li><strong>Random forest importance</strong> uses mean decrease in Gini to quantify how much each feature contributes to reducing classification error.</li>
+</ul>
+<p>By comparing these methods side by side, we can more confidently identify the key drivers of satisfaction and understand how their importance shifts depending on the lens we use.</p>
 </section>
 <section id="interpretation-and-comparison" class="level2">
 <h2 class="anchored" data-anchor-id="interpretation-and-comparison">Interpretation and Comparison</h2>
+<div id="90d50bab" class="cell" data-execution_count="2">
+<details class="code-fold">
+<summary>Exploratory Summary</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"data_for_drivers_analysis.csv"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Set target and features</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> <span class="st">"satisfaction"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [col <span class="cf">for</span> col <span class="kw">in</span> df.columns <span class="cf">if</span> col <span class="op">!=</span> target]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[features]</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[target]</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Pearson Correlation</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>pearson_corr <span class="op">=</span> df[features].corrwith(y).rename(<span class="st">"Pearson Correlation"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Standardized Coefficients</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> StandardScaler().fit_transform(X)</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>linreg <span class="op">=</span> LinearRegression().fit(X_scaled, y)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>standardized_coefs <span class="op">=</span> pd.Series(linreg.coef_, index<span class="op">=</span>features, name<span class="op">=</span><span class="st">"Standardized Coefficients"</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Usefulness (incremental R²)</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>usefulness <span class="op">=</span> {}</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> col <span class="kw">in</span> features:</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    r2 <span class="op">=</span> LinearRegression().fit(X[[col]], y).score(X[[col]], y)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    usefulness[col] <span class="op">=</span> r2</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>usefulness <span class="op">=</span> pd.Series(usefulness, name<span class="op">=</span><span class="st">"Usefulness (R²)"</span>)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Johnson’s Relative Weights (approx. from squared standardized beta)</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>johnson_weights <span class="op">=</span> (standardized_coefs<span class="op">**</span><span class="dv">2</span> <span class="op">/</span> np.<span class="bu">sum</span>(standardized_coefs<span class="op">**</span><span class="dv">2</span>)).rename(<span class="st">"Johnson Weights"</span>)</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Random Forest Importance</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> RandomForestRegressor(random_state<span class="op">=</span><span class="dv">0</span>).fit(X, y)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>rf_importance <span class="op">=</span> pd.Series(rf.feature_importances_, index<span class="op">=</span>features, name<span class="op">=</span><span class="st">"Random Forest (Gini)"</span>)</span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine results</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> pd.concat([pearson_corr, standardized_coefs, usefulness, johnson_weights, rf_importance], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> results.<span class="bu">round</span>(<span class="dv">4</span>)</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
