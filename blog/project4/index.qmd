@@ -287,6 +287,58 @@ To identify the most important drivers of satisfaction, we treat satisfaction as
 
 By comparing these methods side by side, we can more confidently identify the key drivers of satisfaction and understand how their importance shifts depending on the lens we use.
 
-### 
+### Interpretation
+
+```{python}
+#| code-fold: true
+#| code-summary: "Code"
+#| output: false
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.preprocessing import StandardScaler
+import warnings
+warnings.filterwarnings("ignore")
+
+# Load dataset
+df = pd.read_csv("data_for_drivers_analysis.csv")
+
+# Set target and features
+target = "satisfaction"
+features = [col for col in df.columns if col != target]
+
+X = df[features]
+y = df[target]
+
+# 1. Pearson Correlation
+pearson_corr = df[features].corrwith(y).rename("Pearson Correlation")
+
+# 2. Standardized Coefficients
+X_scaled = StandardScaler().fit_transform(X)
+linreg = LinearRegression().fit(X_scaled, y)
+standardized_coefs = pd.Series(linreg.coef_, index=features, name="Standardized Coefficients")
+
+# 3. Usefulness (incremental R²)
+usefulness = {}
+for col in features:
+    r2 = LinearRegression().fit(X[[col]], y).score(X[[col]], y)
+    usefulness[col] = r2
+usefulness = pd.Series(usefulness, name="Usefulness (R²)")
+
+# 4. Johnson’s Relative Weights (approx. from squared standardized beta)
+johnson_weights = (standardized_coefs**2 / np.sum(standardized_coefs**2)).rename("Johnson Weights")
+
+# 5. Random Forest Importance
+rf = RandomForestRegressor(random_state=0).fit(X, y)
+rf_importance = pd.Series(rf.feature_importances_, index=features, name="Random Forest (Gini)")
+
+# Combine results
+results = pd.concat([pearson_corr, standardized_coefs, usefulness, johnson_weights, rf_importance], axis=1)
+results = results.round(4)
+print(results)
+
+```
+
 
 

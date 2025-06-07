@@ -3,10 +3,15 @@
     "listing": "/blog.html",
     "items": [
       "/blog/project5/index.html",
+      "/emw_marketing_analytics/blog/project5/index.html",
       "/blog/project4/index.html",
+      "/emw_marketing_analytics/blog/project4/index.html",
       "/blog/project3/index.html",
+      "/emw_marketing_analytics/blog/project3/index.html",
       "/blog/project2/index.html",
-      "/blog/project1/index.html"
+      "/emw_marketing_analytics/blog/project2/index.html",
+      "/blog/project1/index.html",
+      "/emw_marketing_analytics/blog/project1/index.html"
     ]
   }
 ]
