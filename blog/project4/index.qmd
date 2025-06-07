@@ -1,7 +1,7 @@
 ---
 title: "Key Drivers Analysis"
 author: Emma Wu
-date: June 4, 2025
+date: June 7, 2025
 ---
 
 
@@ -345,7 +345,7 @@ print(results)
 
 ```
 
-This table summarizes the importance of each variable across six supervised methods, replicating the format from the classroom slide (Session 5, Slide 75). All values are normalized or relative importance scores.
+This table summarizes the importance of each variable across six supervised methods. All values are normalized or relative importance scores.
 
 | Perception | Pearson Corr | Std Coeff | Usefulness (R²) | Shapley Values | Johnson Weights | RF Gini |
 |------------|---------------|-----------|------------------|----------------|------------------|---------|
@@ -361,4 +361,33 @@ This table summarizes the importance of each variable across six supervised meth
 | service    | 0.2511        | 0.1029    | 0.0631           | 0.0631         | 0.1867           | 0.0393  |
 | impact     | 0.2545        | 0.1516    | 0.0648           | 0.0648         | 0.4055           | 0.0415  |
 
+Each row in the table corresponds to a feature from the credit card dataset, and each column represents a different method for assessing variable importance. All values are normalized to enable direct comparison. Features scoring highly across multiple methods are considered more influential in predicting customer satisfaction.
+
+Consistent patterns emerge from the table:
+
+- `trust`, `impact`, and `service` consistently rank among the top variables across nearly all methods. These features show strong Pearson correlations, large regression coefficients, and high contributions in Shapley and Johnson weights — highlighting their dominant role in shaping satisfaction.
+- On the other hand, `id` and `brand` show very low values across most methods, suggesting minimal explanatory power.
+- Some features like `easy`, `rewarding`, and `popular` exhibit moderate influence, but with more variation across methods — implying their effect might depend on interactions or be masked by multicollinearity.
+
+This multi-method approach gives a more holistic view of feature importance. Features like `trust` and `impact` repeatedly show up as strong predictors regardless of method, increasing confidence in their relevance. Conversely, disagreement across methods for some features alerts us to possible redundancy or weak signal.
+
+In summary, the analysis suggests that **building trust**, **delivering meaningful impact**, and **providing great service** are the most influential levers for improving satisfaction. These should be prioritized in product design, communication, and customer engagement strategies.
+
 ### Conclusion
+
+This key drivers analysis explored a variety of supervised machine learning techniques to uncover which payment card attributes most strongly influence customer satisfaction. Using the provided dataset, we applied six complementary methods — including correlations, linear regression, Shapley values, Johnson’s weights, and random forests — to assess feature importance from multiple statistical perspectives.
+
+Despite their methodological differences, the techniques converged on a few consistent insights:
+
+- **Trust**, **impact**, and **service** repeatedly emerged as the top three predictors of satisfaction across nearly all methods.
+- These variables are both intuitively meaningful and statistically robust, making them strong candidates for further investment.
+- Other features, such as **ease of use**, **appealing design**, and **rewards**, showed moderate but less consistent influence.
+- Features like **brand** and **ID** exhibited little explanatory power, suggesting limited importance in satisfaction modeling.
+
+These findings have clear practical implications. Organizations aiming to improve customer satisfaction should prioritize:
+
+- Strengthening **brand trust** through consistent messaging and reliability,
+- Highlighting the **personal impact** of their card offerings, and
+- Providing exceptional **customer service** experiences.
+
+By focusing on the most influential drivers identified through this analysis, companies can better allocate resources, tailor communications, and refine product design to drive loyalty and long-term value.

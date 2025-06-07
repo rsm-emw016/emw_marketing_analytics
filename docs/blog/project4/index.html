@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Emma Wu">
-<meta name="dcterms.date" content="2025-06-04">
+<meta name="dcterms.date" content="2025-06-07">
 
 <title>Key Drivers Analysis – Emma’s Website</title>
 <style>
@@ -194,7 +194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">June 4, 2025</p>
+      <p class="date">June 7, 2025</p>
     </div>
   </div>
   
@@ -232,7 +232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>These features provide a morphological basis for clustering.</p>
-<div id="5175bf25" class="cell" data-execution_count="1">
+<div id="5869ce36" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -300,7 +300,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The scatterplot below shows the relationship between bill length and flipper length. We observe clear groupings and a strong positive relationship — penguins with longer bills tend to have longer flippers. This structure suggests that K-Means clustering may reveal meaningful group separation in this two-dimensional space.</p>
-<div id="d7890657" class="cell" data-execution_count="2">
+<div id="1afcfa24" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -329,7 +329,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="k-means-clustering" class="level3">
 <h3 class="anchored" data-anchor-id="k-means-clustering">K-Means Clustering</h3>
 <p>We begin by implementing the K-Means algorithm from scratch and visualizing its iterative convergence. This not only reinforces our understanding of the algorithm’s internal mechanics but also highlights its ability to uncover natural groupings in the data.</p>
-<div id="6a72f8a1" class="cell" data-execution_count="3">
+<div id="73369061" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -409,7 +409,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Silhouette Score: Measures how well-separated the clusters are. Values range from −1 to 1. A higher score indicates better-defined clusters.</p></li>
 </ul>
 <p>We compute these scores for values of ( K ) ranging from 2 to 7.</p>
-<div id="0bc18ece" class="cell" data-execution_count="4">
+<div id="c511dfec" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -476,7 +476,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The clusters are well-separated and closely mirror the output of our manual K-Means implementation, confirming that the algorithm is functioning as expected.</li>
 <li>This comparison helps validate the logic of our scratch implementation, and reinforces that both versions converge on similar grouping patterns.</li>
 </ul>
-<div id="15fe9127" class="cell" data-execution_count="5">
+<div id="c82e99de" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -585,7 +585,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these features best explain variation in satisfaction.</p>
-<div id="37e1afa8" class="cell" data-execution_count="6">
+<div id="fe2933fa" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -609,7 +609,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="interpretation-and-comparison" class="level3">
 <h3 class="anchored" data-anchor-id="interpretation-and-comparison">Interpretation and Comparison</h3>
-<div id="470c9fed" class="cell" data-execution_count="7">
+<div id="7481515c" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -658,7 +658,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>This table summarizes the importance of each variable across six supervised methods, replicating the format from the classroom slide (Session 5, Slide 75). All values are normalized or relative importance scores.</p>
+<p>This table summarizes the importance of each variable across six supervised methods. All values are normalized or relative importance scores.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 12%">
@@ -782,9 +782,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
+<p>Each row in the table corresponds to a feature from the credit card dataset, and each column represents a different method for assessing variable importance. All values are normalized to enable direct comparison. Features scoring highly across multiple methods are considered more influential in predicting customer satisfaction.</p>
+<p>Consistent patterns emerge from the table:</p>
+<ul>
+<li><code>trust</code>, <code>impact</code>, and <code>service</code> consistently rank among the top variables across nearly all methods. These features show strong Pearson correlations, large regression coefficients, and high contributions in Shapley and Johnson weights — highlighting their dominant role in shaping satisfaction.</li>
+<li>On the other hand, <code>id</code> and <code>brand</code> show very low values across most methods, suggesting minimal explanatory power.</li>
+<li>Some features like <code>easy</code>, <code>rewarding</code>, and <code>popular</code> exhibit moderate influence, but with more variation across methods — implying their effect might depend on interactions or be masked by multicollinearity.</li>
+</ul>
+<p>This multi-method approach gives a more holistic view of feature importance. Features like <code>trust</code> and <code>impact</code> repeatedly show up as strong predictors regardless of method, increasing confidence in their relevance. Conversely, disagreement across methods for some features alerts us to possible redundancy or weak signal.</p>
+<p>In summary, the analysis suggests that <strong>building trust</strong>, <strong>delivering meaningful impact</strong>, and <strong>providing great service</strong> are the most influential levers for improving satisfaction. These should be prioritized in product design, communication, and customer engagement strategies.</p>
 </section>
 <section id="conclusion" class="level3">
 <h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<p>This key drivers analysis explored a variety of supervised machine learning techniques to uncover which payment card attributes most strongly influence customer satisfaction. Using the provided dataset, we applied six complementary methods — including correlations, linear regression, Shapley values, Johnson’s weights, and random forests — to assess feature importance from multiple statistical perspectives.</p>
+<p>Despite their methodological differences, the techniques converged on a few consistent insights:</p>
+<ul>
+<li><strong>Trust</strong>, <strong>impact</strong>, and <strong>service</strong> repeatedly emerged as the top three predictors of satisfaction across nearly all methods.</li>
+<li>These variables are both intuitively meaningful and statistically robust, making them strong candidates for further investment.</li>
+<li>Other features, such as <strong>ease of use</strong>, <strong>appealing design</strong>, and <strong>rewards</strong>, showed moderate but less consistent influence.</li>
+<li>Features like <strong>brand</strong> and <strong>ID</strong> exhibited little explanatory power, suggesting limited importance in satisfaction modeling.</li>
+</ul>
+<p>These findings have clear practical implications. Organizations aiming to improve customer satisfaction should prioritize:</p>
+<ul>
+<li>Strengthening <strong>brand trust</strong> through consistent messaging and reliability,</li>
+<li>Highlighting the <strong>personal impact</strong> of their card offerings, and</li>
+<li>Providing exceptional <strong>customer service</strong> experiences.</li>
+</ul>
+<p>By focusing on the most influential drivers identified through this analysis, companies can better allocate resources, tailor communications, and refine product design to drive loyalty and long-term value.</p>
 
 
 </section>
