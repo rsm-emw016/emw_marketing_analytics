@@ -162,7 +162,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#evaluate-clustering-quality" id="toc-evaluate-clustering-quality" class="nav-link" data-scroll-target="#evaluate-clustering-quality">Evaluate Clustering Quality</a></li>
   <li><a href="#use-built-in-k-means-for-comparison" id="toc-use-built-in-k-means-for-comparison" class="nav-link" data-scroll-target="#use-built-in-k-means-for-comparison">Use Built-in K-Means for Comparison</a></li>
   </ul></li>
-  <li><a href="#b.-key-drivers-analysis" id="toc-b.-key-drivers-analysis" class="nav-link" data-scroll-target="#b.-key-drivers-analysis">2b. Key Drivers Analysis</a></li>
+  <li><a href="#b.-key-drivers-analysis" id="toc-b.-key-drivers-analysis" class="nav-link" data-scroll-target="#b.-key-drivers-analysis">2b. Key Drivers Analysis</a>
+  <ul class="collapse">
+  <li><a href="#data-overview-1" id="toc-data-overview-1" class="nav-link" data-scroll-target="#data-overview-1">Data Overview</a></li>
+  <li><a href="#modeling-setup" id="toc-modeling-setup" class="nav-link" data-scroll-target="#modeling-setup">Modeling Setup</a></li>
+  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -226,7 +231,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>These features provide a morphological basis for clustering.</p>
-<div id="c12f5956" class="cell" data-execution_count="1">
+<div id="cc72577f" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -243,7 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Show a sample of the data</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>df_clean.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="23">
 <div>
 
 
@@ -294,7 +299,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The scatterplot below shows the relationship between bill length and flipper length. We observe clear groupings and a strong positive relationship — penguins with longer bills tend to have longer flippers. This structure suggests that K-Means clustering may reveal meaningful group separation in this two-dimensional space.</p>
-<div id="7cef5188" class="cell" data-execution_count="2">
+<div id="f8e72d9e" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -323,7 +328,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="k-means-clustering" class="level3">
 <h3 class="anchored" data-anchor-id="k-means-clustering">K-Means Clustering</h3>
 <p>We begin by implementing the K-Means algorithm from scratch and visualizing its iterative convergence. This not only reinforces our understanding of the algorithm’s internal mechanics but also highlights its ability to uncover natural groupings in the data.</p>
-<div id="bc1f1727" class="cell" data-execution_count="3">
+<div id="4686e932" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -403,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Silhouette Score: Measures how well-separated the clusters are. Values range from −1 to 1. A higher score indicates better-defined clusters.</p></li>
 </ul>
 <p>We compute these scores for values of ( K ) ranging from 2 to 7.</p>
-<div id="360ed922" class="cell" data-execution_count="4">
+<div id="64a28ee5" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -470,7 +475,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The clusters are well-separated and closely mirror the output of our manual K-Means implementation, confirming that the algorithm is functioning as expected.</li>
 <li>This comparison helps validate the logic of our scratch implementation, and reinforces that both versions converge on similar grouping patterns.</li>
 </ul>
-<div id="50ffbfa0" class="cell" data-execution_count="5">
+<div id="19adb6ae" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -518,8 +523,75 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Understanding what drives customer satisfaction is a central goal in marketing analytics. In this post, I use a dataset containing user ratings on various payment card features to examine which attributes—such as trust, service quality, or rewards—most influence overall satisfaction.</p>
 <p>Rather than relying on a single statistical method, I implement a suite of techniques to assess feature importance, including correlation, regression, Shapley values, Johnson’s weights, and Random Forest Gini importance.</p>
 <p>By comparing these diverse approaches, we can identify consistent key drivers and derive actionable insights for improving customer experience.</p>
+<section id="data-overview-1" class="level3">
+<h3 class="anchored" data-anchor-id="data-overview-1">Data Overview</h3>
+<p>The dataset includes customer feedback on various aspects of a payment card and an overall satisfaction score. Each row represents a respondent’s satisfaction ratings on multiple features of their credit card. The key variables are:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 75%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>rate</code></td>
+<td>Overall satisfaction score (target variable)</td>
+</tr>
+<tr class="even">
+<td><code>fees</code></td>
+<td>Interest rate satisfaction</td>
+</tr>
+<tr class="odd">
+<td><code>rewards</code></td>
+<td>Satisfaction with fees and charges</td>
+</tr>
+<tr class="even">
+<td><code>service</code></td>
+<td>Satisfaction with customer service</td>
+</tr>
+<tr class="odd">
+<td><code>secure</code></td>
+<td>Perception of card security</td>
+</tr>
+<tr class="even">
+<td><code>online</code></td>
+<td>Online account management satisfaction</td>
+</tr>
+</tbody>
+</table>
+<p>All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these attributes best explain variation in the overall satisfaction score.</p>
+<div id="cddd3500" class="cell" data-execution_count="6">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> pd.read_csv(<span class="st">'data_for_drivers_analysis.csv'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="modeling-setup" class="level3">
+<h3 class="anchored" data-anchor-id="modeling-setup">Modeling Setup</h3>
+<p>To identify the most important drivers of satisfaction, we treat satisfaction as the outcome variable and the remaining attributes (e.g., trust, service, impact) as predictors. We apply multiple modeling techniques to rank variable importance from different statistical perspectives.</p>
+<ul>
+<li><strong>Correlation</strong> quantifies the strength of a linear relationship between each feature and overall satisfaction.</li>
+<li><strong>Standardized regression coefficients</strong> reflect the relative contribution of each variable in a linear regression when all predictors are on the same scale.</li>
+<li><strong>Usefulness</strong> (incremental R²) measures the marginal explanatory power of each predictor when added to a baseline model.</li>
+<li><strong>Shapley values</strong> fairly allocate the model’s predictive power among features, accounting for interactions and redundancies.</li>
+<li><strong>Johnson’s relative weights</strong> decompose R² to estimate the proportion each variable contributes after accounting for multicollinearity.</li>
+<li><strong>Random forest importance</strong> uses mean decrease in Gini to quantify how much each feature contributes to reducing classification error.</li>
+</ul>
+<p>By comparing these methods side by side, we can more confidently identify the key drivers of satisfaction and understand how their importance shifts depending on the lens we use.</p>
+</section>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section"></h3>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
