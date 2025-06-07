@@ -242,27 +242,32 @@ The built-in `KMeans` implementation confirms the patterns observed in our manua
 
 ## 2b. Key Drivers Analysis
 
-Understanding what drives customer satisfaction is a central goal in marketing analytics. In this post, I use a dataset containing user ratings on various payment card features to examine which attributes—such as trust, service quality, or rewards—most influence overall satisfaction.
+Understanding what drives customer satisfaction is a central goal in marketing analytics. In this section, we use a dataset containing user ratings on various payment card features to examine which attributes—such as trust, service quality, or rewards—most influence overall satisfaction.
 
-Rather than relying on a single statistical method, I implement a suite of techniques to assess feature importance, including correlation, regression, Shapley values, Johnson’s weights, and Random Forest Gini importance.
+Rather than relying on a single statistical method, we implement a suite of techniques to assess feature importance, including correlation, regression, Shapley values, Johnson’s weights, and Random Forest Gini importance.
 
-By comparing these diverse approaches, we can identify consistent key drivers and derive actionable insights for improving customer experience.
 
 ### Data Overview
 
 The dataset includes customer feedback on various aspects of a payment card and an overall satisfaction score. Each row represents a respondent’s satisfaction ratings on multiple features of their credit card. The key variables are:
 
+| Variable      | Description                                         |
+|---------------|-----------------------------------------------------|
+| `brand`       | Brand perception                                    |
+| `id`          | Anonymized respondent ID                            |
+| `trust`       | Perception of brand trustworthiness                 |
+| `build`       | Helps build credit                                  |
+| `differs`     | Perceived uniqueness of the card                    |
+| `easy`        | Ease of use                                         |
+| `appealing`   | Benefits and aesthetics                             |
+| `rewarding`   | Reward value                                        |
+| `popular`     | Card popularity                                     |
+| `service`     | Customer service quality                            |
+| `impact`      | Personal impact or life improvement                 |
+| `satisfaction`| Overall satisfaction score (target variable)        |
 
-| Variable             | Description                                                         |
-|----------------------|---------------------------------------------------------------------|
-| `rate`            | Overall satisfaction score (target variable)                                                            |
-| `fees`              | Interest rate satisfaction                                                                                        |
-| `rewards`             | Satisfaction with fees and charges                                                                 |
-| `service`             | Satisfaction with customer service                                                                  |
-| `secure`               | Perception of card security                                                                              |
-| `online`             | Online account management satisfaction                                                         |
+All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these features best explain variation in satisfaction.
 
-All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these attributes best explain variation in the overall satisfaction score.
 
 ```{python}
 
@@ -287,7 +292,7 @@ To identify the most important drivers of satisfaction, we treat satisfaction as
 
 By comparing these methods side by side, we can more confidently identify the key drivers of satisfaction and understand how their importance shifts depending on the lens we use.
 
-### Interpretation
+### Interpretation and Comparison
 
 ```{python}
 #| code-fold: true
@@ -340,5 +345,20 @@ print(results)
 
 ```
 
+This table summarizes the importance of each variable across six supervised methods, replicating the format from the classroom slide (Session 5, Slide 75). All values are normalized or relative importance scores.
 
+| Perception | Pearson Corr | Std Coeff | Usefulness (R²) | Shapley Values | Johnson Weights | RF Gini |
+|------------|---------------|-----------|------------------|----------------|------------------|---------|
+| brand      | -0.0493       | 0.0122    | 0.0024           | 0.0024         | 0.0026           | 0.1454  |
+| id         | -0.0092       | -0.0150   | 0.0001           | 0.0001         | 0.0039           | 0.5338  |
+| trust      | 0.2557        | 0.1352    | 0.0654           | 0.0654         | 0.3223           | 0.0511  |
+| build      | 0.1919        | 0.0226    | 0.0368           | 0.0368         | 0.0090           | 0.0335  |
+| differs    | 0.1848        | 0.0333    | 0.0342           | 0.0342         | 0.0195           | 0.0305  |
+| easy       | 0.2130        | 0.0265    | 0.0454           | 0.0454         | 0.0124           | 0.0309  |
+| appealing  | 0.2080        | 0.0411    | 0.0433           | 0.0433         | 0.0298           | 0.0291  |
+| rewarding  | 0.1946        | 0.0071    | 0.0379           | 0.0379         | 0.0009           | 0.0302  |
+| popular    | 0.1714        | 0.0203    | 0.0294           | 0.0294         | 0.0073           | 0.0347  |
+| service    | 0.2511        | 0.1029    | 0.0631           | 0.0631         | 0.1867           | 0.0393  |
+| impact     | 0.2545        | 0.1516    | 0.0648           | 0.0648         | 0.4055           | 0.0415  |
 
+### Conclusion
