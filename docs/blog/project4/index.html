@@ -206,6 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p>hi</p>
 <section id="a.-k-means" class="level2">
 <h2 class="anchored" data-anchor-id="a.-k-means">1a. K-Means</h2>
 <p>In this analysis, we apply the K-Means algorithm to cluster penguin observations based on physical measurements. Since there are no labels provided, K-Means operates solely on input features, making this a classic example of unsupervised learning.</p>
@@ -232,7 +233,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>These features provide a morphological basis for clustering.</p>
-<div id="5869ce36" class="cell" data-execution_count="1">
+<div id="e23cbeb4" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -249,7 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Show a sample of the data</span></span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>df_clean.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="15">
 <div>
 
 
@@ -300,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The scatterplot below shows the relationship between bill length and flipper length. We observe clear groupings and a strong positive relationship — penguins with longer bills tend to have longer flippers. This structure suggests that K-Means clustering may reveal meaningful group separation in this two-dimensional space.</p>
-<div id="1afcfa24" class="cell" data-execution_count="2">
+<div id="19814377" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -329,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="k-means-clustering" class="level3">
 <h3 class="anchored" data-anchor-id="k-means-clustering">K-Means Clustering</h3>
 <p>We begin by implementing the K-Means algorithm from scratch and visualizing its iterative convergence. This not only reinforces our understanding of the algorithm’s internal mechanics but also highlights its ability to uncover natural groupings in the data.</p>
-<div id="73369061" class="cell" data-execution_count="3">
+<div id="4da74447" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -409,7 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Silhouette Score: Measures how well-separated the clusters are. Values range from −1 to 1. A higher score indicates better-defined clusters.</p></li>
 </ul>
 <p>We compute these scores for values of ( K ) ranging from 2 to 7.</p>
-<div id="c511dfec" class="cell" data-execution_count="4">
+<div id="650c8fd9" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -476,7 +477,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The clusters are well-separated and closely mirror the output of our manual K-Means implementation, confirming that the algorithm is functioning as expected.</li>
 <li>This comparison helps validate the logic of our scratch implementation, and reinforces that both versions converge on similar grouping patterns.</li>
 </ul>
-<div id="c82e99de" class="cell" data-execution_count="5">
+<div id="cfe52bb7" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -585,7 +586,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these features best explain variation in satisfaction.</p>
-<div id="fe2933fa" class="cell" data-execution_count="6">
+<div id="60daff11" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -609,7 +610,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="interpretation-and-comparison" class="level3">
 <h3 class="anchored" data-anchor-id="interpretation-and-comparison">Interpretation and Comparison</h3>
-<div id="7481515c" class="cell" data-execution_count="7">
+<div id="558af644" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
