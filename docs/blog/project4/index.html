@@ -161,13 +161,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#k-means-clustering" id="toc-k-means-clustering" class="nav-link" data-scroll-target="#k-means-clustering">K-Means Clustering</a></li>
   <li><a href="#evaluate-clustering-quality" id="toc-evaluate-clustering-quality" class="nav-link" data-scroll-target="#evaluate-clustering-quality">Evaluate Clustering Quality</a></li>
   <li><a href="#use-built-in-k-means-for-comparison" id="toc-use-built-in-k-means-for-comparison" class="nav-link" data-scroll-target="#use-built-in-k-means-for-comparison">Use Built-in K-Means for Comparison</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul></li>
   <li><a href="#b.-key-drivers-analysis" id="toc-b.-key-drivers-analysis" class="nav-link" data-scroll-target="#b.-key-drivers-analysis">2b. Key Drivers Analysis</a>
   <ul class="collapse">
   <li><a href="#data-overview-1" id="toc-data-overview-1" class="nav-link" data-scroll-target="#data-overview-1">Data Overview</a></li>
   <li><a href="#modeling-setup" id="toc-modeling-setup" class="nav-link" data-scroll-target="#modeling-setup">Modeling Setup</a></li>
   <li><a href="#interpretation-and-comparison" id="toc-interpretation-and-comparison" class="nav-link" data-scroll-target="#interpretation-and-comparison">Interpretation and Comparison</a></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#conclusion-1" id="toc-conclusion-1" class="nav-link" data-scroll-target="#conclusion-1">Conclusion</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -232,7 +233,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>These features provide a morphological basis for clustering.</p>
-<div id="3e7c2fed" class="cell" data-execution_count="1">
+<div id="c14d5993" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -300,7 +301,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The scatterplot below shows the relationship between bill length and flipper length. We observe clear groupings and a strong positive relationship — penguins with longer bills tend to have longer flippers. This structure suggests that K-Means clustering may reveal meaningful group separation in this two-dimensional space.</p>
-<div id="8ecc261b" class="cell" data-execution_count="2">
+<div id="b7b2de99" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -329,7 +330,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="k-means-clustering" class="level3">
 <h3 class="anchored" data-anchor-id="k-means-clustering">K-Means Clustering</h3>
 <p>We begin by implementing the K-Means algorithm from scratch and visualizing its iterative convergence. This not only reinforces our understanding of the algorithm’s internal mechanics but also highlights its ability to uncover natural groupings in the data.</p>
-<div id="c849dd28" class="cell" data-execution_count="3">
+<div id="040ace88" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -409,7 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p>Silhouette Score: Measures how well-separated the clusters are. Values range from −1 to 1. A higher score indicates better-defined clusters.</p></li>
 </ul>
 <p>We compute these scores for values of ( K ) ranging from 2 to 7.</p>
-<div id="1ff3852d" class="cell" data-execution_count="4">
+<div id="ea732990" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -476,7 +477,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>The clusters are well-separated and closely mirror the output of our manual K-Means implementation, confirming that the algorithm is functioning as expected.</li>
 <li>This comparison helps validate the logic of our scratch implementation, and reinforces that both versions converge on similar grouping patterns.</li>
 </ul>
-<div id="da2f9545" class="cell" data-execution_count="5">
+<div id="9fd253e6" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -517,6 +518,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>The built-in <code>KMeans</code> implementation confirms the patterns observed in our manual clustering. The three clusters are well-separated and exhibit strong alignment with the underlying data structure based on bill length and flipper length. The red “X” markers show the final centroids, which are close to those found in our scratch version. This further validates our earlier approach and demonstrates the consistency of K-Means results when implemented both manually and using standard libraries.</p>
+</section>
+<section id="conclusion" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<p>The K-Means clustering analysis effectively revealed natural groupings within the Palmer Penguins dataset using two morphological features — bill length and flipper length. By manually implementing the algorithm and visualizing its step-by-step convergence, we gained intuitive understanding of how the centroids evolve and how the algorithm minimizes within-cluster variance.</p>
+<p>Both the elbow method and silhouette scores supported the choice of K = 3 as the optimal number of clusters. This was further validated by the built-in KMeans function from scikit-learn, which produced cluster assignments and centroids nearly identical to those generated manually.</p>
+<p>Together, these results show that K-Means is well-suited for identifying structure in biological datasets where class labels are not available. The method is not only conceptually straightforward and computationally efficient, but also yields interpretable results that align well with visual patterns in the data.</p>
 </section>
 </section>
 <section id="b.-key-drivers-analysis" class="level2">
@@ -585,7 +592,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>All ratings are numeric and likely measured on the same scale (e.g., 1 to 10), allowing for direct comparison across variables. Our goal is to identify which of these features best explain variation in satisfaction.</p>
-<div id="18253e52" class="cell" data-execution_count="6">
+<div id="2dc1e333" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -609,7 +616,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="interpretation-and-comparison" class="level3">
 <h3 class="anchored" data-anchor-id="interpretation-and-comparison">Interpretation and Comparison</h3>
-<div id="18adad19" class="cell" data-execution_count="7">
+<div id="08501116" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -792,8 +799,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This multi-method approach gives a more holistic view of feature importance. Features like <code>trust</code> and <code>impact</code> repeatedly show up as strong predictors regardless of method, increasing confidence in their relevance. Conversely, disagreement across methods for some features alerts us to possible redundancy or weak signal.</p>
 <p>In summary, the analysis suggests that <strong>building trust</strong>, <strong>delivering meaningful impact</strong>, and <strong>providing great service</strong> are the most influential levers for improving satisfaction. These should be prioritized in product design, communication, and customer engagement strategies.</p>
 </section>
-<section id="conclusion" class="level3">
-<h3 class="anchored" data-anchor-id="conclusion">Conclusion</h3>
+<section id="conclusion-1" class="level3">
+<h3 class="anchored" data-anchor-id="conclusion-1">Conclusion</h3>
 <p>This key drivers analysis explored a variety of supervised machine learning techniques to uncover which payment card attributes most strongly influence customer satisfaction. Using the provided dataset, we applied six complementary methods — including correlations, linear regression, Shapley values, Johnson’s weights, and random forests — to assess feature importance from multiple statistical perspectives.</p>
 <p>Despite their methodological differences, the techniques converged on a few consistent insights:</p>
 <ul>

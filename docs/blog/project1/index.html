@@ -246,7 +246,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="data">Data</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<div id="271b855c" class="cell" data-execution_count="1">
+<div id="61401b04" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -506,7 +506,7 @@ Variable Definitions
 <li><p>Two-sample t-tests</p></li>
 <li><p>Simple linear regressions</p></li>
 </ul>
-<div id="878a4afa" class="cell" data-execution_count="2">
+<div id="3d3a571a" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -624,7 +624,7 @@ Variable Definitions
 <section id="charitable-contribution-made" class="level3">
 <h3 class="anchored" data-anchor-id="charitable-contribution-made">Charitable Contribution Made</h3>
 <p>First, I analyze whether matched donations lead to an increased response rate of making a donation.</p>
-<div id="b79adbb9" class="cell" data-execution_count="3">
+<div id="9b25a889" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -661,7 +661,7 @@ Variable Definitions
 </div>
 </div>
 <p>Based on the barplot above, we can compare donation behavior between individuals who received different versions of a fundraising letter. Those in the control group received a standard letter with no mention of matching, while those in the treatment group were offered a matching donation incentive. Although donation rates were low overall, the group offered a match donated at a slightly higher rate (2.2%) compared to the group without a match (1.8%). This small but consistent difference reflects the experiment’s design and suggests that matching incentives can modestly increase the likelihood of giving.</p>
-<div id="f3a50686" class="cell" data-execution_count="4">
+<div id="aefe19b4" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -683,7 +683,7 @@ Variable Definitions
 <span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.summary())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="9d8cb880" class="cell" data-execution_count="5">
+<div id="6b5cd9f6" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
@@ -725,7 +725,7 @@ Variable Definitions
 </table>
 <p>This table compares the results of a t-test and an OLS regression, both examining whether offering a donation match increases the likelihood of giving. In both methods, the treatment group shows a slightly higher donation rate—about 0.42 percentage points more than the control group. Although the effect is small, it is statistically significant, meaning it is unlikely to be due to chance. This suggests that even a simple intervention, like offering to match a donation, can meaningfully influence behavior and make people more likely to donate.</p>
 <p>Then, I ran a probit regression where the outcome variable is whether a person donated (<code>gave</code>), and the explanatory variable is whether they were assigned to receive a matching offer (<code>treatment</code>). The results below are based on the latent (probit) scale.</p>
-<div id="edce00c7" class="cell" data-execution_count="6">
+<div id="b0ef4413" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -785,7 +785,7 @@ Variable Definitions
 </table>
 <p>The positive and statistically significant coefficient on <code>treatment</code> indicates that being assigned to receive a matching offer increases the likelihood of donation. While this estimate is on the latent (probit) scale, the significance (p = 0.002) confirms a clear effect.</p>
 <p>To translate this to a change in predicted probability, we can compute the marginal effect (see below).</p>
-<div id="a60b9170" class="cell" data-execution_count="7">
+<div id="20c73058" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sm</span>
@@ -845,7 +845,7 @@ Variable Definitions
 <section id="t-test-results" class="level4">
 <h4 class="anchored" data-anchor-id="t-test-results">T-Test Results</h4>
 <p>I first conducted pairwise t-tests comparing the proportion of individuals who donated (<code>gave</code>) under different match ratios:</p>
-<div id="2d5586fe" class="cell" data-execution_count="8">
+<div id="bf7b59d0" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -933,7 +933,7 @@ Variable Definitions
 <section id="logistic-regression" class="level4">
 <h4 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h4>
 <p>Next, I ran a logistic regression to model the probability of donating as a function of match ratio:</p>
-<div id="a3fdf56e" class="cell" data-execution_count="9">
+<div id="bde07c3b" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1019,7 +1019,7 @@ Variable Definitions
 <li><strong>Direct from the data</strong>: I calculated the mean of the <code>gave</code> variable for each match group (within the treatment group).</li>
 <li><strong>From the regression model</strong>: Since each coefficient in the no-intercept OLS regression represents the donation rate for that group, I subtracted the coefficients to compute differences.</li>
 </ul>
-<div id="11de25f9" class="cell" data-execution_count="10">
+<div id="3531f286" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Show code for response-rate differences</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1050,7 +1050,7 @@ Variable Definitions
 <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>diff_table</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>/var/folders/yf/g_800hts37z9ftxfvzrc1fc80000gn/T/ipykernel_2326/1559164577.py:9: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
+<pre><code>/var/folders/yf/g_800hts37z9ftxfvzrc1fc80000gn/T/ipykernel_3508/1559164577.py:9: FutureWarning: The default of observed=False is deprecated and will be changed to True in a future version of pandas. Pass observed=False to retain current behavior or observed=True to adopt the future default and silence this warning.
   means = treated.groupby("ratio")["gave"].mean()</code></pre>
 </div>
 <div class="cell-output cell-output-display" data-execution_count="10">
@@ -1164,7 +1164,7 @@ Variable Definitions
 </tbody>
 </table>
 <p>The treatment group gave slightly less, but the difference is not statistically significant. There is no causal interpretation. Since we’re conditioning on a post-treatment behavior (having donated), this breaks randomization and introduces selection bias. Therefore, this result is descriptive only, not causal.</p>
-<div id="0708551d" class="cell" data-execution_count="11">
+<div id="b2c4d5d8" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1220,7 +1220,7 @@ Variable Definitions
 <section id="law-of-large-numbers" class="level3">
 <h3 class="anchored" data-anchor-id="law-of-large-numbers">Law of Large Numbers</h3>
 <p>To illustrate the Law of Large Numbers (LLN), I simulated donation behavior using binary outcomes based on the actual probabilities observed in the experiment:</p>
-<div id="8987d079" class="cell" data-execution_count="12">
+<div id="6d4a180e" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1258,7 +1258,7 @@ Variable Definitions
 <section id="central-limit-theorem" class="level3">
 <h3 class="anchored" data-anchor-id="central-limit-theorem">Central Limit Theorem</h3>
 <p>To visualize how the sampling distribution of the average difference behaves, I simulated four experiments using increasing sample sizes: 50, 200, 500, and 1000. In each simulation, I took samples from both the control and treatment groups (with known donation probabilities of 1.8% and 2.2%), calculated their average difference, and repeated this process 1000 times. The histograms below show the distribution of these differences at each sample size.</p>
-<div id="e37b4130" class="cell" data-execution_count="13">
+<div id="ccb95b5d" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>

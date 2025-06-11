@@ -238,6 +238,13 @@ plt.show()
 
 The built-in `KMeans` implementation confirms the patterns observed in our manual clustering. The three clusters are well-separated and exhibit strong alignment with the underlying data structure based on bill length and flipper length. The red “X” markers show the final centroids, which are close to those found in our scratch version. This further validates our earlier approach and demonstrates the consistency of K-Means results when implemented both manually and using standard libraries.
 
+### Conclusion
+
+The K-Means clustering analysis effectively revealed natural groupings within the Palmer Penguins dataset using two morphological features — bill length and flipper length. By manually implementing the algorithm and visualizing its step-by-step convergence, we gained intuitive understanding of how the centroids evolve and how the algorithm minimizes within-cluster variance.
+
+Both the elbow method and silhouette scores supported the choice of K = 3 as the optimal number of clusters. This was further validated by the built-in KMeans function from scikit-learn, which produced cluster assignments and centroids nearly identical to those generated manually.
+
+Together, these results show that K-Means is well-suited for identifying structure in biological datasets where class labels are not available. The method is not only conceptually straightforward and computationally efficient, but also yields interpretable results that align well with visual patterns in the data.
 
 ## 2b. Key Drivers Analysis
 
