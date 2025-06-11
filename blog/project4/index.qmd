@@ -4,7 +4,6 @@ author: Emma Wu
 date: June 7, 2025
 ---
 
-
 ## 1a. K-Means
 
 In this analysis, we apply the K-Means algorithm to cluster penguin observations based on physical measurements. Since there are no labels provided, K-Means operates solely on input features, making this a classic example of unsupervised learning.
